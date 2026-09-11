@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CatalogoRouteImport } from './routes/catalogo'
+import { Route as InstalacionRouteImport } from './routes/instalacion'
+import { Route as MayoristasRouteImport } from './routes/mayoristas'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CatalogoRoute = CatalogoRouteImport.update({
+  id: '/catalogo',
+  path: '/catalogo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstalacionRoute = InstalacionRouteImport.update({
+  id: '/instalacion',
+  path: '/instalacion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MayoristasRoute = MayoristasRouteImport.update({
+  id: '/mayoristas',
+  path: '/mayoristas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/catalogo': typeof CatalogoRoute
+  '/instalacion': typeof InstalacionRoute
+  '/mayoristas': typeof MayoristasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/catalogo': typeof CatalogoRoute
+  '/instalacion': typeof InstalacionRoute
+  '/mayoristas': typeof MayoristasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/catalogo': typeof CatalogoRoute
+  '/instalacion': typeof InstalacionRoute
+  '/mayoristas': typeof MayoristasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/catalogo' | '/instalacion' | '/mayoristas'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/catalogo' | '/instalacion' | '/mayoristas'
+  id: '__root__' | '/' | '/catalogo' | '/instalacion' | '/mayoristas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CatalogoRoute: typeof CatalogoRoute
+  InstalacionRoute: typeof InstalacionRoute
+  MayoristasRoute: typeof MayoristasRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/catalogo': {
+      id: '/catalogo'
+      path: '/catalogo'
+      fullPath: '/catalogo'
+      preLoaderRoute: typeof CatalogoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/instalacion': {
+      id: '/instalacion'
+      path: '/instalacion'
+      fullPath: '/instalacion'
+      preLoaderRoute: typeof InstalacionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mayoristas': {
+      id: '/mayoristas'
+      path: '/mayoristas'
+      fullPath: '/mayoristas'
+      preLoaderRoute: typeof MayoristasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CatalogoRoute: CatalogoRoute,
+  InstalacionRoute: InstalacionRoute,
+  MayoristasRoute: MayoristasRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
