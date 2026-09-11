@@ -1,14 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
-const NAV = [
-  { label: "Inicio", to: "/" },
-  { label: "Minisplits Inverter", to: "/catalogo", search: { tech: "Inverter" } },
-  { label: "Convencionales", to: "/catalogo", search: { tech: "Convencional" } },
-  { label: "Frío/Calor", to: "/catalogo", search: { mode: "Frío/Calor" } },
-  { label: "Solo Frío", to: "/catalogo", search: { mode: "Solo Frío" } },
-  { label: "Cotización Mayorista", to: "/mayoristas" },
-  { label: "Instalación", to: "/instalacion" },
-] as const;
+const linkClass = "transition hover:text-foreground";
+const activeProps = { className: "text-foreground" };
 
 export function SiteHeader() {
   return (
