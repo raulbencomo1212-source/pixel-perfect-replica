@@ -11,17 +11,27 @@ export function SiteHeader() {
           NORTE<span className="text-primary">CLIMA</span>
         </Link>
         <nav className="hidden items-center gap-6 font-mono text-[11px] uppercase tracking-wide text-muted-foreground lg:flex">
-          {NAV.map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              search={"search" in item ? (item.search as never) : undefined}
-              activeProps={{ className: "text-foreground" }}
-              className="transition hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
+          <Link to="/" activeOptions={{ exact: true }} activeProps={activeProps} className={linkClass}>
+            Inicio
+          </Link>
+          <Link to="/catalogo" search={{ tech: "Inverter" }} activeProps={activeProps} className={linkClass}>
+            Minisplits Inverter
+          </Link>
+          <Link to="/catalogo" search={{ tech: "Convencional" }} activeProps={activeProps} className={linkClass}>
+            Convencionales
+          </Link>
+          <Link to="/catalogo" search={{ mode: "Frío/Calor" }} activeProps={activeProps} className={linkClass}>
+            Frío/Calor
+          </Link>
+          <Link to="/catalogo" search={{ mode: "Solo Frío" }} activeProps={activeProps} className={linkClass}>
+            Solo Frío
+          </Link>
+          <Link to="/mayoristas" activeProps={activeProps} className={linkClass}>
+            Cotización Mayorista
+          </Link>
+          <Link to="/instalacion" activeProps={activeProps} className={linkClass}>
+            Instalación
+          </Link>
         </nav>
         <Link
           to="/mayoristas"
