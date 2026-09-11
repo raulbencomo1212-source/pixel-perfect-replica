@@ -77,11 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "NorteClima · Minisplits Inverter en México" },
+      {
+        name: "description",
+        content:
+          "Tienda especializada en minisplits: calculadora de capacidad, catálogo por tonelaje e instalación certificada.",
+      },
+      { name: "author", content: "NorteClima" },
+      { property: "og:title", content: "NorteClima · Minisplits Inverter en México" },
+      {
+        property: "og:description",
+        content: "Minisplits con ficha técnica completa, envío inmediato e instalación certificada.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
