@@ -106,7 +106,8 @@ export function recommend(m2: number, zone: Zone, sun: Sun) {
   const zoneFactor = { Templada: 1, Semiárida: 1.12, Árida: 1.25 }[zone];
   const sunFactor = { Baja: 1, Media: 1.08, Alta: 1.18 }[sun];
   const btuRaw = m2 * 600 * zoneFactor * sunFactor;
-  const match = TONNAGES.find((t) => t.btu >= btuRaw) ?? TONNAGES[TONNAGES.length - 1];
+  const fallback = { tons: 3 as Tonnage, btu: 36000, use: "Zonas abiertas, oficinas", area: "40–60 m²", from: 30999 };
+  const match = TONNAGES.find((t) => t.btu >= btuRaw) ?? fallback;
   return { ...match, factor: Number((zoneFactor * sunFactor).toFixed(2)) };
 }
 

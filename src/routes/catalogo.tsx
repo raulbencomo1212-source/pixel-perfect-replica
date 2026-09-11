@@ -14,14 +14,19 @@ import {
   type Voltage,
 } from "@/lib/products";
 
-type Search = { tech?: Tech; mode?: Mode; tons?: Tonnage; voltage?: Voltage };
+type Search = {
+  tech?: Tech | undefined;
+  mode?: Mode | undefined;
+  tons?: Tonnage | undefined;
+  voltage?: Voltage | undefined;
+};
 
 export const Route = createFileRoute("/catalogo")({
   validateSearch: (search: Record<string, unknown>): Search => ({
-    tech: search.tech === "Inverter" || search.tech === "Convencional" ? search.tech : undefined,
-    mode: search.mode === "Solo Frío" || search.mode === "Frío/Calor" ? search.mode : undefined,
-    voltage: search.voltage === "110V" || search.voltage === "220V" ? search.voltage : undefined,
-    tons: [1, 1.5, 2, 3].includes(Number(search.tons)) ? (Number(search.tons) as Tonnage) : undefined,
+    tech: search["tech"] === "Inverter" || search["tech"] === "Convencional" ? (search["tech"] as Tech) : undefined,
+    mode: search["mode"] === "Solo Frío" || search["mode"] === "Frío/Calor" ? (search["mode"] as Mode) : undefined,
+    voltage: search["voltage"] === "110V" || search["voltage"] === "220V" ? (search["voltage"] as Voltage) : undefined,
+    tons: [1, 1.5, 2, 3].includes(Number(search["tons"])) ? (Number(search["tons"]) as Tonnage) : undefined,
   }),
   head: () => ({
     meta: [
@@ -73,10 +78,10 @@ function Chip({
 
 function Catalogo() {
   const initial = Route.useSearch();
-  const [tech, setTech] = useState<Tech | undefined>(initial.tech);
-  const [mode, setMode] = useState<Mode | undefined>(initial.mode);
-  const [tons, setTons] = useState<Tonnage | undefined>(initial.tons);
-  const [voltage, setVoltage] = useState<Voltage | undefined>(initial.voltage);
+  const [tech, setTech] = useState<Tech | undefined>(initial["tech"]);
+  const [mode, setMode] = useState<Mode | undefined>(initial["mode"]);
+  const [tons, setTons] = useState<Tonnage | undefined>(initial["tons"]);
+  const [voltage, setVoltage] = useState<Voltage | undefined>(initial["voltage"]);
 
   const rows = useMemo(() => {
     return PRODUCTS.flatMap((p) =>
@@ -178,8 +183,7 @@ function Catalogo() {
                 </div>
                 <div className="mt-1 font-display text-lg font-bold tracking-tight">{product.name}</div>
                 <div className="mt-2 font-mono text-[11px] text-muted-foreground">
-                  {variant.btuLabel ?? `${(variant.tons * 12000).toLocaleString("es-MX")} BTU`} ·{" "}
-                  {variant.refrigerant} · {variant.noiseDb} dB · SEER {variant.seer}
+                  {(variant.tons * 12000).toLocaleString("es-MX")} BTU · {variant.refrigerant} · {variant.noiseDb} dB · SEER {variant.seer}
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
                   <span className="font-display font-semibold">{mxn(variant.price)}</span>
