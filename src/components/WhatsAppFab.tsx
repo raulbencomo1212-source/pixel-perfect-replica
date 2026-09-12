@@ -1,16 +1,16 @@
-export function WhatsAppFab({ message }: { message?: string }) {
-  const text = encodeURIComponent(
-    message ?? "Hola, quiero cotizar un minisplit con instalación. ¿Me apoyan?",
-  );
+import { MessageCircle } from "lucide-react";
+import { WHATSAPP_NUMBER } from "@/data/products";
+
+export function WhatsAppFab() {
   return (
     <a
-      href={`https://wa.me/5215555555555?text=${text}`}
+      href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20Climas%20Max,%20me%20gustar%C3%ADa%20cotizar%20un%20minisplit`}
       target="_blank"
-      rel="noreferrer"
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-success px-4 py-3 font-body text-sm font-semibold text-background ring-1 ring-black/5 shadow-sm"
+      rel="noopener noreferrer"
+      aria-label="Cotizar por WhatsApp"
+      className="animate-pulse-ring fixed bottom-6 right-6 z-50 grid size-14 place-items-center rounded-full bg-emerald text-emerald-foreground shadow-lg transition hover:scale-105"
     >
-      <span className="grid size-5 place-items-center rounded-full bg-background/20 font-mono text-[10px]">W</span>
-      Cotiza por WhatsApp
+      <MessageCircle className="size-7" />
     </a>
   );
 }
