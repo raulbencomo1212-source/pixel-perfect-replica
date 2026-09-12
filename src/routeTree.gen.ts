@@ -10,9 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CalculadoraRouteImport } from './routes/calculadora'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
+import { Route as HerramientasRouteImport } from './routes/herramientas'
 import { Route as InstalacionRouteImport } from './routes/instalacion'
 import { Route as MayoristasRouteImport } from './routes/mayoristas'
+import { Route as MinisplitsRouteImport } from './routes/minisplits'
+import { Route as RefaccionesRouteImport } from './routes/refacciones'
 import { Route as ProductoSlugRouteImport } from './routes/producto.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -20,9 +24,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CalculadoraRoute = CalculadoraRouteImport.update({
+  id: '/calculadora',
+  path: '/calculadora',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CatalogoRoute = CatalogoRouteImport.update({
   id: '/catalogo',
   path: '/catalogo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HerramientasRoute = HerramientasRouteImport.update({
+  id: '/herramientas',
+  path: '/herramientas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstalacionRoute = InstalacionRouteImport.update({
@@ -35,6 +49,16 @@ const MayoristasRoute = MayoristasRouteImport.update({
   path: '/mayoristas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MinisplitsRoute = MinisplitsRouteImport.update({
+  id: '/minisplits',
+  path: '/minisplits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefaccionesRoute = RefaccionesRouteImport.update({
+  id: '/refacciones',
+  path: '/refacciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductoSlugRoute = ProductoSlugRouteImport.update({
   id: '/producto/$slug',
   path: '/producto/$slug',
@@ -43,46 +67,83 @@ const ProductoSlugRoute = ProductoSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calculadora': typeof CalculadoraRoute
   '/catalogo': typeof CatalogoRoute
+  '/herramientas': typeof HerramientasRoute
   '/instalacion': typeof InstalacionRoute
   '/mayoristas': typeof MayoristasRoute
+  '/minisplits': typeof MinisplitsRoute
+  '/refacciones': typeof RefaccionesRoute
   '/producto/$slug': typeof ProductoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/calculadora': typeof CalculadoraRoute
   '/catalogo': typeof CatalogoRoute
+  '/herramientas': typeof HerramientasRoute
   '/instalacion': typeof InstalacionRoute
   '/mayoristas': typeof MayoristasRoute
+  '/minisplits': typeof MinisplitsRoute
+  '/refacciones': typeof RefaccionesRoute
   '/producto/$slug': typeof ProductoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/calculadora': typeof CalculadoraRoute
   '/catalogo': typeof CatalogoRoute
+  '/herramientas': typeof HerramientasRoute
   '/instalacion': typeof InstalacionRoute
   '/mayoristas': typeof MayoristasRoute
+  '/minisplits': typeof MinisplitsRoute
+  '/refacciones': typeof RefaccionesRoute
   '/producto/$slug': typeof ProductoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/catalogo' | '/instalacion' | '/mayoristas' | '/producto/$slug'
+    | '/'
+    | '/calculadora'
+    | '/catalogo'
+    | '/herramientas'
+    | '/instalacion'
+    | '/mayoristas'
+    | '/minisplits'
+    | '/refacciones'
+    | '/producto/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalogo' | '/instalacion' | '/mayoristas' | '/producto/$slug'
+  to:
+    | '/'
+    | '/calculadora'
+    | '/catalogo'
+    | '/herramientas'
+    | '/instalacion'
+    | '/mayoristas'
+    | '/minisplits'
+    | '/refacciones'
+    | '/producto/$slug'
   id:
     | '__root__'
     | '/'
+    | '/calculadora'
     | '/catalogo'
+    | '/herramientas'
     | '/instalacion'
     | '/mayoristas'
+    | '/minisplits'
+    | '/refacciones'
     | '/producto/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CalculadoraRoute: typeof CalculadoraRoute
   CatalogoRoute: typeof CatalogoRoute
+  HerramientasRoute: typeof HerramientasRoute
   InstalacionRoute: typeof InstalacionRoute
   MayoristasRoute: typeof MayoristasRoute
+  MinisplitsRoute: typeof MinisplitsRoute
+  RefaccionesRoute: typeof RefaccionesRoute
   ProductoSlugRoute: typeof ProductoSlugRoute
 }
 
@@ -95,11 +156,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/calculadora': {
+      id: '/calculadora'
+      path: '/calculadora'
+      fullPath: '/calculadora'
+      preLoaderRoute: typeof CalculadoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/catalogo': {
       id: '/catalogo'
       path: '/catalogo'
       fullPath: '/catalogo'
       preLoaderRoute: typeof CatalogoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/herramientas': {
+      id: '/herramientas'
+      path: '/herramientas'
+      fullPath: '/herramientas'
+      preLoaderRoute: typeof HerramientasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/instalacion': {
@@ -116,6 +191,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MayoristasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/minisplits': {
+      id: '/minisplits'
+      path: '/minisplits'
+      fullPath: '/minisplits'
+      preLoaderRoute: typeof MinisplitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refacciones': {
+      id: '/refacciones'
+      path: '/refacciones'
+      fullPath: '/refacciones'
+      preLoaderRoute: typeof RefaccionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/producto/$slug': {
       id: '/producto/$slug'
       path: '/producto/$slug'
@@ -128,9 +217,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CalculadoraRoute: CalculadoraRoute,
   CatalogoRoute: CatalogoRoute,
+  HerramientasRoute: HerramientasRoute,
   InstalacionRoute: InstalacionRoute,
   MayoristasRoute: MayoristasRoute,
+  MinisplitsRoute: MinisplitsRoute,
+  RefaccionesRoute: RefaccionesRoute,
   ProductoSlugRoute: ProductoSlugRoute,
 }
 export const routeTree = rootRouteImport
