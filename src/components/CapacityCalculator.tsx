@@ -1,57 +1,49 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { recommend, type Sun, type Zone } from "@/lib/products";
+import { useState } from "react";
+import { BTU_BY_TONS, recomendar, type Zona } from "@/data/products";
 
-const ZONES: Zone[] = ["Templada", "Semiárida", "Árida"];
-const SUNS: Sun[] = ["Baja", "Media", "Alta"];
+const ZONAS: Zona[] = ["Templada", "Cálida", "Extrema"];
 
 export function CapacityCalculator() {
-  const [m2, setM2] = useState(28);
-  const [zone, setZone] = useState<Zone>("Semiárida");
-  const [sun, setSun] = useState<Sun>("Media");
+  const [m2, setM2] = useState(18);
+  const [zona, setZona] = useState<Zona>("Cálida");
+  const [personas, setPersonas] = useState(2);
+  const [sol, setSol] = useState(false);
 
-  const result = useMemo(() => recommend(m2 || 0, zone, sun), [m2, zone, sun]);
+  const r = recomendar(m2, zona, personas, sol);
 
   return (
-    <div
-      className="animate-rise rounded-xl bg-foreground p-6 text-background ring-1 ring-black/5 md:p-8"
-      style={{ animationDelay: "80ms" }}
-    >
-      <div className="flex items-baseline justify-between">
-        <h2 className="font-display text-xl font-bold tracking-tight">Calculadora de capacidad</h2>
-        <span className="font-mono text-[10px] uppercase tracking-wide text-background/50">
-          (a) Dimensiona tu equipo
-        </span>
-      </div>
-
-      <div className="mt-6 grid gap-5 sm:grid-cols-3">
-        <label className="block">
-          <span className="font-mono text-[10px] uppercase tracking-wide text-background/60">
-            Metros cuadrados
-          </span>
+    <div className="grid gap-6 rounded-xl border border-border bg-card p-6 shadow-sm lg:grid-cols-[1.2fr_1fr]">
+      <div className="grid gap-5">
+        <div>
+          <label htmlFor="m2" className="flex items-center justify-between text-sm font-semibold">
+            Área del cuarto
+            <span className="font-display text-base text-primary">{m2} m²</span>
+          </label>
           <input
-            type="number"
-            min={5}
-            max={120}
+            id="m2"
+            type="range"
+            min={8}
+            max={60}
+            step={1}
             value={m2}
             onChange={(e) => setM2(Number(e.target.value))}
-            className="mt-2 w-full rounded-md border-0 bg-background/10 px-3 py-2.5 font-display text-lg font-semibold text-background outline-none ring-1 ring-background/15 focus:ring-primary"
+            className="mt-2 w-full accent-[var(--primary)]"
           />
-        </label>
-        <div className="block">
-          <span className="font-mono text-[10px] uppercase tracking-wide text-background/60">
-            Zona climática
-          </span>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {ZONES.map((z) => (
+        </div>
+
+        <div>
+          <span className="text-sm font-semibold">Zona climática</span>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {ZONAS.map((z) => (
               <button
                 key={z}
                 type="button"
-                onClick={() => setZone(z)}
+                onClick={() => setZona(z)}
                 className={
-                  zone === z
-                    ? "rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
-                    : "rounded-md px-3 py-2 text-xs text-background/70 ring-1 ring-background/15"
+                  zona === z
+                    ? "rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                    : "rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:bg-secondary"
                 }
               >
                 {z}
@@ -59,51 +51,43 @@ export function CapacityCalculator() {
             ))}
           </div>
         </div>
-        <div className="block">
-          <span className="font-mono text-[10px] uppercase tracking-wide text-background/60">Sol directo</span>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {SUNS.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSun(s)}
-                className={
-                  sun === s
-                    ? "rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
-                    : "rounded-md px-3 py-2 text-xs text-background/70 ring-1 ring-background/15"
-                }
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+
+        <div>
+          <label htmlFor="personas" className="flex items-center justify-between text-sm font-semibold">
+            Personas en el espacio
+            <span className="font-display text-base text-primary">{personas}</span>
+          </label>
+          <input
+            id="personas"
+            type="range"
+            min={1}
+            max={10}
+            step={1}
+            value={personas}
+            onChange={(e) => setPersonas(Number(e.target.value))}
+            className="mt-2 w-full accent-[var(--primary)]"
+          />
         </div>
+
+        <label className="flex cursor-pointer items-center gap-2 rounded-md bg-secondary p-3 text-sm">
+          <input type="checkbox" checked={sol} onChange={(e) => setSol(e.target.checked)} className="size-4 accent-[var(--primary)]" />
+          Sol directo en techo o ventanales grandes
+        </label>
       </div>
 
-      <div className="mt-6 grid grid-cols-3 items-center gap-4 rounded-lg bg-background/8 p-4 ring-1 ring-background/10">
-        <div>
-          <div className="font-mono text-[10px] uppercase tracking-wide text-background/60">Recomendado</div>
-          <div className="font-display text-3xl font-bold tracking-tight">
-            {result.tons} <span className="text-lg text-background/60">ton</span>
-          </div>
-        </div>
-        <div className="mx-auto h-9 w-px bg-background/15" />
-        <div>
-          <div className="font-mono text-[10px] uppercase tracking-wide text-background/60">Capacidad</div>
-          <div className="font-display text-2xl font-bold tracking-tight">
-            {result.btu.toLocaleString("es-MX")} <span className="text-sm text-background/60">BTU/h</span>
-          </div>
+      <div className="flex flex-col justify-center rounded-xl bg-navy p-6 text-navy-foreground">
+        <div className="text-[12px] uppercase tracking-wide text-navy-foreground/60">Capacidad recomendada</div>
+        <div className="mt-2 font-display text-4xl font-extrabold">{r.tons} Ton</div>
+        <div className="mt-1 text-sm text-navy-foreground/80">
+          {BTU_BY_TONS[r.tons].toLocaleString("es-MX")} BTU · tu cálculo estimado: {r.btu.toLocaleString("es-MX")} BTU
         </div>
         <Link
-          to="/catalogo"
-          search={{ tons: result.tons }}
-          className="col-span-3 mt-1 rounded-md bg-primary py-2.5 text-center font-body text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+          to="/minisplits"
+          search={{ tons: r.tons }}
+          className="mt-5 rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground transition hover:opacity-90"
         >
-          Ver equipos {result.tons} ton
+          Ver minisplits de {r.tons} Toneladas recomendados
         </Link>
-        <p className="col-span-3 font-mono text-[10px] uppercase tracking-wide text-background/40">
-          Factor aplicado {result.factor} · {m2 || 0} m² · cobertura {result.area}
-        </p>
       </div>
     </div>
   );
