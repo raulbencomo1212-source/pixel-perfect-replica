@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { CartProvider } from "../lib/cart";
 
 function NotFoundComponent() {
   return (
@@ -77,17 +78,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NorteClima · Minisplits Inverter en México" },
+      { title: "Climas Max · Minisplits, refacciones y herramientas" },
       {
         name: "description",
         content:
-          "Tienda especializada en minisplits: calculadora de capacidad, catálogo por tonelaje e instalación certificada.",
+          "Tienda de minisplits, refacciones y herramientas HVAC en México. Hasta 12 meses sin intereses con envío e instalación.",
       },
-      { name: "author", content: "NorteClima" },
-      { property: "og:title", content: "NorteClima · Minisplits Inverter en México" },
+      { name: "author", content: "Climas Max" },
+      { property: "og:title", content: "Climas Max · Minisplits a 12 MSI" },
       {
         property: "og:description",
-        content: "Minisplits con ficha técnica completa, envío inmediato e instalación certificada.",
+        content: "Minisplits Inverter y convencionales, refacciones y herramientas con instalación profesional.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -132,8 +133,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <CartProvider>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </CartProvider>
     </QueryClientProvider>
   );
 }

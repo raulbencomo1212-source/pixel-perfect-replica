@@ -1,188 +1,183 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { CreditCard, Truck, Wrench, ShieldCheck } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
+import { CartDrawer } from "@/components/CartDrawer";
+import { MinisplitCard, SimpleCard } from "@/components/ProductCard";
 import { CapacityCalculator } from "@/components/CapacityCalculator";
-import { TONNAGES, mxn } from "@/lib/products";
-import avatar1 from "@/assets/avatar-1.jpg";
-import avatar2 from "@/assets/avatar-2.jpg";
-import avatar3 from "@/assets/avatar-3.jpg";
+import { HERRAMIENTAS, MINISPLITS, REFACCIONES, TONS_LIST, type Tech, type Tons } from "@/data/products";
+import heroImg from "@/assets/minisplit-evaporador.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "NorteClima · Minisplits Inverter con instalación en México" },
+      { title: "Climas Max | Minisplits, refacciones y herramientas a 12 MSI" },
       {
         name: "description",
         content:
-          "Tienda especializada en minisplits: calcula tus BTU por metro cuadrado, compara SEER y R32, y compra con envío inmediato e instalación certificada.",
+          "Venta e instalación de minisplits Inverter y convencionales en México. Paga hasta 12 meses sin intereses, con refacciones y herramientas HVAC.",
       },
-      { property: "og:title", content: "NorteClima · Minisplits Inverter con instalación" },
+      { property: "og:title", content: "Climas Max | Minisplits a 12 Meses Sin Intereses" },
       {
         property: "og:description",
-        content:
-          "Calculadora de capacidad, catálogo por tonelaje y ficha técnica completa. Meses sin intereses y garantía de fábrica.",
+        content: "Minisplits garantizados, refacciones y herramientas HVAC con envío e instalación en tu ciudad.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  component: Home,
 });
 
-const BENEFITS = [
-  {
-    title: "10 meses sin intereses",
-    body: "Con tarjeta participante. Aprovecha crédito en todas las unidades.",
-  },
-  {
-    title: "Garantía de fábrica",
-    body: "Hasta 10 años en compresor inverter y 5 en partes eléctricas.",
-  },
-  {
-    title: "Envío inmediato",
-    body: "Salimos el mismo día en CDMX, Guadalajara y Monterrey.",
-  },
-  {
-    title: "Instalación certificada",
-    body: "Con o sin instalación. Verifica cobertura por código postal.",
-  },
-];
+function Home() {
+  const [tech, setTech] = useState<Tech | undefined>(undefined);
+  const [tons, setTons] = useState<Tons | undefined>(undefined);
 
-function Index() {
+  const visibles = MINISPLITS.filter((p) => (!tech || p.tech === tech) && (!tons || TONS_LIST.includes(tons)));
+
+  const pills: { label: string; active: boolean; onClick: () => void }[] = [
+    { label: "Todos", active: !tech && !tons, onClick: () => { setTech(undefined); setTons(undefined); } },
+    { label: "Inverter", active: tech === "inverter", onClick: () => setTech(tech === "inverter" ? undefined : "inverter") },
+    {
+      label: "Convencional",
+      active: tech === "convencional",
+      onClick: () => setTech(tech === "convencional" ? undefined : "convencional"),
+    },
+    ...TONS_LIST.map((t) => ({
+      label: `${t} Ton`,
+      active: tons === t,
+      onClick: () => setTons(tons === t ? undefined : t),
+    })),
+  ];
+
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-5">
-        <section className="grid gap-8 py-10 lg:grid-cols-12">
-          <div className="animate-rise lg:col-span-5">
-            <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-primary">
-              Especialistas en minisplits · MX
-            </p>
-            <h1 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight text-balance md:text-5xl">
-              Aire frío, <span className="text-primary">medido al metro cuadrado.</span>
-            </h1>
-            <p className="mt-5 max-w-[46ch] font-body text-base text-muted-foreground text-pretty">
-              El único e-commerce de minisplits en México. Cotiza por tonaje, compara SEER y R32, con instalación
-              certificada y envío inmediato.
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <a
-                href="#calc"
-                className="rounded-md bg-primary px-5 py-3 font-body text-sm font-semibold text-primary-foreground ring-1 ring-black/5 transition hover:brightness-110"
-              >
-                Calcular mi BTU
-              </a>
-              <a
-                href="#ton"
-                className="rounded-md px-5 py-3 font-body text-sm font-semibold text-foreground ring-1 ring-foreground/15 transition hover:bg-foreground/5"
-              >
-                Ver por tonaje
-              </a>
-            </div>
-            <div className="mt-8 grid grid-cols-3 divide-x divide-border rounded-md ring-1 ring-border">
-              <div className="px-4 py-3">
-                <div className="font-display text-2xl font-bold tracking-tight">12,400+</div>
-                <div className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-                  Instalaciones
-                </div>
-              </div>
-              <div className="px-4 py-3">
-                <div className="font-display text-2xl font-bold tracking-tight">10 yrs</div>
-                <div className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-                  Garantía compresor
-                </div>
-              </div>
-              <div className="px-4 py-3">
-                <div className="font-display text-2xl font-bold tracking-tight">4.9/5</div>
-                <div className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-                  2,180 reseñas
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {[avatar1, avatar2, avatar3].map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt=""
-                    width={512}
-                    height={512}
-                    loading="lazy"
-                    className="size-8 rounded-full object-cover ring-1 ring-border"
-                  />
-                ))}
-              </div>
-              <p className="font-body text-xs text-muted-foreground">
-                “Instalaron dos minisplits <span className="font-semibold text-foreground">en un día</span>. CDMX,
-                Pedregal.” — Ana R.
+      <CartDrawer />
+      <main>
+        <section className="border-b border-border bg-navy text-navy-foreground">
+          <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 lg:grid-cols-2 lg:py-16">
+            <div className="animate-rise">
+              <span className="rounded-full bg-emerald px-3 py-1 text-[12px] font-bold text-emerald-foreground">
+                Hasta 12 Meses Sin Intereses
+              </span>
+              <h1 className="mt-4 font-display text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                Equipa tu espacio hoy y paga a 12 Meses Sin Intereses
+              </h1>
+              <p className="mt-4 max-w-[52ch] text-navy-foreground/80">
+                Venta e instalación de minisplits garantizados, además de refacciones y herramientas para técnicos HVAC.
               </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link
+                  to="/minisplits"
+                  search={{}}
+                  className="rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition hover:opacity-90"
+                >
+                  Ver Climas
+                </Link>
+                <Link
+                  to="/calculadora"
+                  className="rounded-lg border border-navy-foreground/25 px-6 py-3 font-semibold transition hover:bg-navy-foreground/10"
+                >
+                  ¿Cuál es mi clima ideal?
+                </Link>
+              </div>
             </div>
+            <img
+              src={heroImg}
+              alt="Minisplit instalado en una pared blanca"
+              width={1200}
+              height={900}
+              className="w-full rounded-2xl object-cover shadow-xl"
+            />
           </div>
+        </section>
 
-          <div id="calc" className="lg:col-span-7">
+        <section className="border-b border-border bg-secondary/40">
+          <div className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: CreditCard, t: "12 MSI", d: "Con tarjetas participantes" },
+              { icon: Truck, t: "Envío rápido", d: "Cobertura nacional" },
+              { icon: Wrench, t: "Instalación", d: "Técnicos certificados" },
+              { icon: ShieldCheck, t: "Garantía", d: "Directa de fábrica" },
+            ].map(({ icon: Icon, t, d }) => (
+              <div key={t} className="flex items-center gap-3">
+                <Icon className="size-6 text-primary" />
+                <div>
+                  <div className="text-sm font-semibold">{t}</div>
+                  <div className="text-[12px] text-muted-foreground">{d}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-4 py-12">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-display text-2xl font-extrabold tracking-tight">Minisplits Más Vendidos</h2>
+            <Link to="/minisplits" search={{}} className="text-sm font-semibold text-primary hover:underline">
+              Ver todo el catálogo →
+            </Link>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {pills.map((p) => (
+              <button
+                key={p.label}
+                type="button"
+                onClick={p.onClick}
+                className={
+                  p.active
+                    ? "rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                    : "rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:bg-secondary"
+                }
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {visibles.map((p) => (
+              <MinisplitCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-4 pb-12">
+          <h2 className="font-display text-2xl font-extrabold tracking-tight">¿Cuál es mi clima ideal?</h2>
+          <p className="mt-2 max-w-[60ch] text-sm text-muted-foreground">
+            Calcula los BTU y las toneladas que necesita tu espacio en segundos.
+          </p>
+          <div className="mt-6">
             <CapacityCalculator />
           </div>
         </section>
 
-        <section id="ton" className="py-10">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-display text-2xl font-bold tracking-tight text-balance">Elige por tonaje</h2>
-            <span className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-              (b) Rango de uso
-            </span>
+        <section className="mx-auto max-w-7xl px-4 pb-12">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-display text-2xl font-extrabold tracking-tight">Refacciones más pedidas</h2>
+            <Link to="/refacciones" className="text-sm font-semibold text-primary hover:underline">
+              Ver refacciones →
+            </Link>
           </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {TONNAGES.map((t) => {
-              const featured = t.tons === 2;
-              return (
-                <Link
-                  key={t.tons}
-                  to="/catalogo"
-                  search={{ tons: t.tons }}
-                  className={`group rounded-lg bg-background p-5 ring-1 transition ${
-                    featured ? "ring-primary/50 hover:ring-primary" : "ring-border hover:ring-primary/40"
-                  }`}
-                >
-                  <div
-                    className={`font-mono text-[10px] uppercase tracking-wide ${
-                      featured ? "text-primary" : "text-muted-foreground"
-                    }`}
-                  >
-                    {t.tons.toFixed(1)} ton{featured ? " · más buscado" : ""}
-                  </div>
-                  <div className="mt-1 font-display text-2xl font-bold tracking-tight">
-                    {t.btu.toLocaleString("es-MX")} BTU
-                  </div>
-                  <div className="mt-3 font-body text-xs text-muted-foreground">
-                    {t.use}
-                    <br />
-                    {t.area}
-                  </div>
-                  <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                    <span className="font-display font-semibold">desde {mxn(t.from)}</span>
-                    <span className="text-primary transition group-hover:translate-x-0.5">→</span>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {REFACCIONES.slice(0, 4).map((p) => (
+              <SimpleCard key={p.id} product={p} />
+            ))}
           </div>
         </section>
 
-        <section className="py-10">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-display text-2xl font-bold tracking-tight">Por qué NorteClima</h2>
-            <span className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-              (c) Confianza y cobertura
-            </span>
+        <section className="mx-auto max-w-7xl px-4 pb-14">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-display text-2xl font-extrabold tracking-tight">Herramientas para técnicos</h2>
+            <Link to="/herramientas" className="text-sm font-semibold text-primary hover:underline">
+              Ver herramientas →
+            </Link>
           </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {BENEFITS.map((b) => (
-              <div key={b.title} className="rounded-lg p-5 ring-1 ring-border">
-                <div className="font-display text-lg font-bold tracking-tight">{b.title}</div>
-                <p className="mt-2 font-body text-xs text-muted-foreground">{b.body}</p>
-              </div>
+          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {HERRAMIENTAS.slice(0, 4).map((p) => (
+              <SimpleCard key={p.id} product={p} />
             ))}
           </div>
         </section>

@@ -10,9 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CatalogoRouteImport } from './routes/catalogo'
-import { Route as InstalacionRouteImport } from './routes/instalacion'
-import { Route as MayoristasRouteImport } from './routes/mayoristas'
+import { Route as CalculadoraRouteImport } from './routes/calculadora'
+import { Route as HerramientasRouteImport } from './routes/herramientas'
+import { Route as MinisplitsRouteImport } from './routes/minisplits'
+import { Route as RefaccionesRouteImport } from './routes/refacciones'
 import { Route as ProductoSlugRouteImport } from './routes/producto.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -20,19 +21,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CatalogoRoute = CatalogoRouteImport.update({
-  id: '/catalogo',
-  path: '/catalogo',
+const CalculadoraRoute = CalculadoraRouteImport.update({
+  id: '/calculadora',
+  path: '/calculadora',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InstalacionRoute = InstalacionRouteImport.update({
-  id: '/instalacion',
-  path: '/instalacion',
+const HerramientasRoute = HerramientasRouteImport.update({
+  id: '/herramientas',
+  path: '/herramientas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MayoristasRoute = MayoristasRouteImport.update({
-  id: '/mayoristas',
-  path: '/mayoristas',
+const MinisplitsRoute = MinisplitsRouteImport.update({
+  id: '/minisplits',
+  path: '/minisplits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefaccionesRoute = RefaccionesRouteImport.update({
+  id: '/refacciones',
+  path: '/refacciones',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductoSlugRoute = ProductoSlugRouteImport.update({
@@ -43,46 +49,62 @@ const ProductoSlugRoute = ProductoSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/catalogo': typeof CatalogoRoute
-  '/instalacion': typeof InstalacionRoute
-  '/mayoristas': typeof MayoristasRoute
+  '/calculadora': typeof CalculadoraRoute
+  '/herramientas': typeof HerramientasRoute
+  '/minisplits': typeof MinisplitsRoute
+  '/refacciones': typeof RefaccionesRoute
   '/producto/$slug': typeof ProductoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/catalogo': typeof CatalogoRoute
-  '/instalacion': typeof InstalacionRoute
-  '/mayoristas': typeof MayoristasRoute
+  '/calculadora': typeof CalculadoraRoute
+  '/herramientas': typeof HerramientasRoute
+  '/minisplits': typeof MinisplitsRoute
+  '/refacciones': typeof RefaccionesRoute
   '/producto/$slug': typeof ProductoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/catalogo': typeof CatalogoRoute
-  '/instalacion': typeof InstalacionRoute
-  '/mayoristas': typeof MayoristasRoute
+  '/calculadora': typeof CalculadoraRoute
+  '/herramientas': typeof HerramientasRoute
+  '/minisplits': typeof MinisplitsRoute
+  '/refacciones': typeof RefaccionesRoute
   '/producto/$slug': typeof ProductoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/catalogo' | '/instalacion' | '/mayoristas' | '/producto/$slug'
+    | '/'
+    | '/calculadora'
+    | '/herramientas'
+    | '/minisplits'
+    | '/refacciones'
+    | '/producto/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalogo' | '/instalacion' | '/mayoristas' | '/producto/$slug'
+  to:
+    | '/'
+    | '/calculadora'
+    | '/herramientas'
+    | '/minisplits'
+    | '/refacciones'
+    | '/producto/$slug'
   id:
     | '__root__'
     | '/'
-    | '/catalogo'
-    | '/instalacion'
-    | '/mayoristas'
+    | '/calculadora'
+    | '/herramientas'
+    | '/minisplits'
+    | '/refacciones'
     | '/producto/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CatalogoRoute: typeof CatalogoRoute
-  InstalacionRoute: typeof InstalacionRoute
-  MayoristasRoute: typeof MayoristasRoute
+  CalculadoraRoute: typeof CalculadoraRoute
+  HerramientasRoute: typeof HerramientasRoute
+  MinisplitsRoute: typeof MinisplitsRoute
+  RefaccionesRoute: typeof RefaccionesRoute
   ProductoSlugRoute: typeof ProductoSlugRoute
 }
 
@@ -95,25 +117,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/catalogo': {
-      id: '/catalogo'
-      path: '/catalogo'
-      fullPath: '/catalogo'
-      preLoaderRoute: typeof CatalogoRouteImport
+    '/calculadora': {
+      id: '/calculadora'
+      path: '/calculadora'
+      fullPath: '/calculadora'
+      preLoaderRoute: typeof CalculadoraRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/instalacion': {
-      id: '/instalacion'
-      path: '/instalacion'
-      fullPath: '/instalacion'
-      preLoaderRoute: typeof InstalacionRouteImport
+    '/herramientas': {
+      id: '/herramientas'
+      path: '/herramientas'
+      fullPath: '/herramientas'
+      preLoaderRoute: typeof HerramientasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mayoristas': {
-      id: '/mayoristas'
-      path: '/mayoristas'
-      fullPath: '/mayoristas'
-      preLoaderRoute: typeof MayoristasRouteImport
+    '/minisplits': {
+      id: '/minisplits'
+      path: '/minisplits'
+      fullPath: '/minisplits'
+      preLoaderRoute: typeof MinisplitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refacciones': {
+      id: '/refacciones'
+      path: '/refacciones'
+      fullPath: '/refacciones'
+      preLoaderRoute: typeof RefaccionesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/producto/$slug': {
@@ -128,9 +157,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CatalogoRoute: CatalogoRoute,
-  InstalacionRoute: InstalacionRoute,
-  MayoristasRoute: MayoristasRoute,
+  CalculadoraRoute: CalculadoraRoute,
+  HerramientasRoute: HerramientasRoute,
+  MinisplitsRoute: MinisplitsRoute,
+  RefaccionesRoute: RefaccionesRoute,
   ProductoSlugRoute: ProductoSlugRoute,
 }
 export const routeTree = rootRouteImport

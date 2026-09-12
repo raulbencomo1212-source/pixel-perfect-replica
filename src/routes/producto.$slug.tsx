@@ -1,230 +1,277 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
+import { Check, PackageCheck, ShieldCheck } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
-import productImg from "@/assets/minisplit-product.jpg";
+import { CartDrawer } from "@/components/CartDrawer";
+import { useCart } from "@/lib/cart";
 import {
-  PRODUCTS,
+  BTU_BY_TONS,
+  MODES,
+  TONS_LIST,
+  VOLTAGES,
+  cuota12MSI,
+  getMinisplit,
+  getPrice,
+  isVoltageAvailable,
   mxn,
-  priceFor,
-  type Mode,
-  type Tonnage,
+  priceFrom,
+  type ModeKey,
+  type Tons,
   type Voltage,
-} from "@/lib/products";
-
-type Search = { tons?: Tonnage | undefined; voltage?: Voltage | undefined; mode?: Mode | undefined };
+} from "@/data/products";
 
 export const Route = createFileRoute("/producto/$slug")({
-  validateSearch: (search: Record<string, unknown>): Search => ({
-    tons: [1, 1.5, 2, 3].includes(Number(search["tons"])) ? (Number(search["tons"]) as Tonnage) : undefined,
-    voltage: search["voltage"] === "110V" || search["voltage"] === "220V" ? search["voltage"] : undefined,
-    mode:
-      search["mode"] === "Solo Frío" || search["mode"] === "Frío/Calor" ? (search["mode"] as Mode) : undefined,
-  }),
   loader: ({ params }) => {
-    const product = PRODUCTS.find((p) => p.slug === params.slug);
+    const product = getMinisplit(params.slug);
     if (!product) throw notFound();
-    return product;
+    return { name: product.name, tech: product.tech, desde: priceFrom(product) };
   },
-  head: ({ loaderData }) => ({
-    meta: [
-      { title: `${loaderData?.name ?? "Minisplit"} · configura tonelaje y voltaje | NorteClima` },
-      {
-        name: "description",
-        content:
-          loaderData?.tagline ??
-          "Configura tu minisplit por tecnología, tonelaje, voltaje y modo, con ficha técnica y precio en MXN.",
-      },
-      { property: "og:title", content: `${loaderData?.name ?? "Minisplit"} | NorteClima` },
-      {
-        property: "og:description",
-        content: loaderData?.tagline ?? "Minisplits con ficha técnica completa y precio en MXN.",
-      },
-      { property: "og:type", content: "product" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Producto,
+  head: ({ loaderData }) => {
+    const name = loaderData?.name ?? "Minisplit";
+    const desc = `${name}: configura capacidad, voltaje y modo. Desde ${
+      loaderData ? mxn(loaderData.desde) : ""
+    } de contado o 12 meses sin intereses, con kit de instalación básico incluido.`;
+    return {
+      meta: [
+        { title: `${name} — precio y 12 MSI | Climas Max` },
+        { name: "description", content: desc },
+        { property: "og:title", content: `${name} | Climas Max` },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "product" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    };
+  },
+  component: ProductoPage,
 });
 
-function Producto() {
-  const product = Route.useLoaderData();
-  const search = Route.useSearch();
-  const [tons, setTons] = useState<Tonnage>(search.tons ?? 1.5);
-  const [voltage, setVoltage] = useState<Voltage>(search.voltage ?? "220V");
-  const [mode, setMode] = useState<Mode>(search.mode ?? "Frío/Calor");
-  const [withInstall, setWithInstall] = useState(true);
+function ProductoPage() {
+  const { slug } = Route.useParams();
+  const product = getMinisplit(slug)!;
+  const { add } = useCart();
 
-  const variant = priceFor(product, tons, voltage, mode);
-  const total = (variant?.price ?? 0) + (withInstall ? 1850 : 0);
+  const [tons, setTons] = useState<Tons>("1.0");
+  const [voltage, setVoltage] = useState<Voltage>("110V");
+  const [mode, setMode] = useState<ModeKey>("frio");
+  const [qty, setQty] = useState(1);
+  const [img, setImg] = useState(0);
 
-  const tonOptions: Tonnage[] = [1, 1.5, 2, 3];
-  const voltOptions: Voltage[] = ["110V", "220V"];
-  const modeOptions: Mode[] = ["Solo Frío", "Frío/Calor"];
+  const selectTons = (t: Tons) => {
+    setTons(t);
+    if (!isVoltageAvailable(t, voltage)) setVoltage("220V");
+  };
+
+  const price = getPrice(product, tons, voltage, mode) ?? priceFrom(product);
+  const modeLabel = MODES.find((m) => m.key === mode)!.label;
+  const detalle = `${tons} Ton · ${voltage} · ${modeLabel}`;
+  const hero = product.images[img] ?? product.images[0]!;
 
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-5">
-        <section className="grid gap-8 py-10 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+      <CartDrawer />
+      <main className="mx-auto max-w-7xl px-4 py-8">
+        <div className="grid gap-10 lg:grid-cols-2">
+          <div>
             <img
-              src={productImg}
-              alt={`${product.name} instalado en muro`}
-              width={1280}
-              height={960}
-              className="aspect-[4/3] w-full rounded-xl object-cover ring-1 ring-border"
+              src={hero.src}
+              alt={`${product.name} — ${hero.label}`}
+              width={1200}
+              height={900}
+              className="aspect-[4/3] w-full rounded-xl border border-border object-cover"
             />
-            <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.15em] text-primary">
-              {product.brand} · {variant?.tech ?? "Inverter"}
-            </p>
-            <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-balance">
-              {product.name} · {tons} ton · {voltage} · {mode}
-            </h1>
-            <p className="mt-4 max-w-[52ch] font-body text-sm text-muted-foreground text-pretty">
-              {product.tagline}
-            </p>
-
-            <div className="mt-7 flex items-baseline justify-between">
-              <h2 className="font-display text-xl font-bold tracking-tight">Ficha técnica</h2>
-              <span className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-                (a) Actualiza con tu configuración
-              </span>
-            </div>
-            <div className="mt-3 overflow-hidden rounded-lg ring-1 ring-border">
-              <table className="w-full font-mono text-[12px]">
-                <tbody>
-                  <Row label="Capacidad" value={`${tons} ton · ${(tons * 12000).toLocaleString("es-MX")} BTU/h`} />
-                  <Row label="Refrigerante" value={variant?.refrigerant ?? "—"} alt />
-                  <Row label="Ruido interior" value={variant ? `${variant.noiseDb} dB` : "—"} />
-                  <Row label="Consumo" value={variant ? `${variant.kwh} kW/h` : "—"} alt />
-                  <Row label="Eficiencia" value={variant ? `SEER ${variant.seer}` : "—"} />
-                  <Row label="Voltaje" value={`${voltage} · 60 Hz`} alt />
-                  <Row label="Función" value={mode} />
-                  <Row
-                    label="Garantía compresor"
-                    value={variant ? `${variant.warrantyYears} años` : "—"}
-                    alt
-                  />
-                </tbody>
-              </table>
+            <div className="mt-3 grid grid-cols-3 gap-3">
+              {product.images.map((im, idx) => (
+                <button
+                  key={im.label}
+                  type="button"
+                  onClick={() => setImg(idx)}
+                  className={`overflow-hidden rounded-lg border-2 transition ${
+                    idx === img ? "border-primary" : "border-border hover:border-primary/40"
+                  }`}
+                >
+                  <img src={im.src} alt={im.label} loading="lazy" width={1200} height={900} className="aspect-[4/3] w-full object-cover" />
+                  <span className="block bg-secondary py-1 text-[11px] font-medium">{im.label}</span>
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="lg:col-span-5">
-            <div className="sticky top-24 rounded-xl bg-foreground p-6 text-background ring-1 ring-black/5 md:p-8">
-              <div className="flex items-baseline justify-between">
-                <h2 className="font-display text-xl font-bold tracking-tight">Configura tu equipo</h2>
-                <span className="font-mono text-[10px] uppercase tracking-wide text-background/50">
-                  {variant ? variant.stock : "No disponible"}
-                </span>
+          <div>
+            <div className="text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">{product.brand}</div>
+            <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight">{product.name}</h1>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span
+                className={`rounded px-2.5 py-1 text-[11px] font-bold uppercase ${
+                  product.tech === "inverter" ? "bg-emerald text-emerald-foreground" : "bg-primary text-primary-foreground"
+                }`}
+              >
+                {product.tech === "inverter" ? "Inverter · Ahorro de energía" : "Convencional"}
+              </span>
+              <span className="rounded bg-secondary px-2.5 py-1 text-[11px] font-bold uppercase">SEER {product.specs.seer}</span>
+            </div>
+
+            <div className="mt-6 grid gap-5">
+              <div>
+                <div className="text-sm font-semibold">Capacidad</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {TONS_LIST.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => selectTons(t)}
+                      className={
+                        tons === t
+                          ? "rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
+                          : "rounded-lg border border-border px-4 py-2.5 text-sm transition hover:bg-secondary"
+                      }
+                    >
+                      {t} Ton ({BTU_BY_TONS[t].toLocaleString("es-MX")} BTU)
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <Group label="Tonelaje">
-                {tonOptions.map((t) => (
-                  <Opt key={t} active={tons === t} onClick={() => setTons(t)}>
-                    {t} T
-                  </Opt>
-                ))}
-              </Group>
-              <Group label="Voltaje">
-                {voltOptions.map((v) => (
-                  <Opt key={v} active={voltage === v} onClick={() => setVoltage(v)}>
-                    {v}
-                  </Opt>
-                ))}
-              </Group>
-              <Group label="Función">
-                {modeOptions.map((m) => (
-                  <Opt key={m} active={mode === m} onClick={() => setMode(m)}>
-                    {m}
-                  </Opt>
-                ))}
-              </Group>
+              <div>
+                <div className="text-sm font-semibold">Voltaje</div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {VOLTAGES.map((v) => {
+                    const disabled = !isVoltageAvailable(tons, v);
+                    return (
+                      <button
+                        key={v}
+                        type="button"
+                        disabled={disabled}
+                        title={disabled ? "Solo disponible en 220V" : undefined}
+                        onClick={() => setVoltage(v)}
+                        className={
+                          disabled
+                            ? "cursor-not-allowed rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground/50 line-through"
+                            : voltage === v
+                              ? "rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
+                              : "rounded-lg border border-border px-4 py-2.5 text-sm transition hover:bg-secondary"
+                        }
+                      >
+                        {v}
+                      </button>
+                    );
+                  })}
+                  {!isVoltageAvailable(tons, "110V") && (
+                    <span className="rounded bg-amber/20 px-2.5 py-1 text-[11px] font-semibold text-amber-foreground">
+                      Solo disponible en 220V
+                    </span>
+                  )}
+                </div>
+              </div>
 
-              <div className="mt-6 rounded-lg bg-background/8 p-4 ring-1 ring-background/10">
-                {variant ? (
-                  <>
-                    <div className="font-mono text-[10px] uppercase tracking-wide text-background/60">Precio</div>
-                    <div className="font-display text-3xl font-bold tracking-tight">{mxn(total)}</div>
-                    <div className="mt-1 font-mono text-[11px] text-background/60">
-                      o 10 MSI de {mxn(Math.round(total / 10))} · IVA incluido
-                    </div>
-                  </>
-                ) : (
-                  <div className="font-body text-sm text-background/70">
-                    Esa combinación no existe: los equipos de 2 y 3 toneladas solo se fabrican en 220V.
-                  </div>
-                )}
-                <label className="mt-4 flex items-center gap-2.5 font-body text-sm text-background/85">
-                  <input
-                    type="checkbox"
-                    checked={withInstall}
-                    onChange={(e) => setWithInstall(e.target.checked)}
-                    className="size-4 accent-[oklch(0.55_0.13_243)]"
-                  />
-                  Agregar instalación certificada{" "}
-                  <span className="font-mono text-[11px] text-background/50">+ $1,850</span>
-                </label>
+              <div>
+                <div className="text-sm font-semibold">Modo</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {MODES.map((m) => (
+                    <button
+                      key={m.key}
+                      type="button"
+                      onClick={() => setMode(m.key)}
+                      className={
+                        mode === m.key
+                          ? "rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
+                          : "rounded-lg border border-border px-4 py-2.5 text-sm transition hover:bg-secondary"
+                      }
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-xl border border-border bg-secondary/50 p-5">
+              <div className="font-display text-4xl font-extrabold tracking-tight">{mxn(price)} MXN</div>
+              <div className="mt-2 rounded-lg bg-emerald/10 px-4 py-3 font-semibold text-emerald">
+                12 mensualidades de {mxn(cuota12MSI(price))} a Meses Sin Intereses
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className="flex items-center rounded-lg border border-border bg-background">
+                  <button type="button" aria-label="Menos" onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2.5">
+                    −
+                  </button>
+                  <span className="w-8 text-center text-sm font-semibold">{qty}</span>
+                  <button type="button" aria-label="Más" onClick={() => setQty(qty + 1)} className="px-3 py-2.5">
+                    +
+                  </button>
+                </div>
                 <button
                   type="button"
-                  disabled={!variant}
-                  className="mt-5 w-full rounded-md bg-primary py-3 font-body text-sm font-semibold text-primary-foreground transition hover:brightness-110 disabled:opacity-40"
+                  onClick={() =>
+                    add(
+                      {
+                        key: `${product.slug}-${tons}-${voltage}-${mode}`,
+                        name: product.name,
+                        detalle,
+                        price,
+                        image: product.images[0]!.src,
+                      },
+                      qty,
+                    )
+                  }
+                  className="flex-1 rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition hover:opacity-90"
                 >
-                  Agregar al carrito
+                  Agregar al Carrito
                 </button>
               </div>
+            </div>
+
+            <div className="mt-4 flex items-start gap-2 rounded-lg bg-amber/15 p-4 text-sm font-medium">
+              <PackageCheck className="mt-0.5 size-5 shrink-0 text-amber-foreground" />
+              Incluye kit de instalación básico de fábrica (tubería y accesorios).
+            </div>
+          </div>
+        </div>
+
+        <section className="mt-14 grid gap-10 lg:grid-cols-2">
+          <div>
+            <h2 className="font-display text-xl font-bold">Descripción</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+            <ul className="mt-4 grid gap-2 text-sm">
+              {[
+                "Envío e instalación disponible en tu ciudad",
+                "Garantía directa de fábrica",
+                "Asesoría técnica por WhatsApp antes y después de tu compra",
+              ].map((t) => (
+                <li key={t} className="flex items-center gap-2">
+                  <Check className="size-4 text-emerald" /> {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="font-display text-xl font-bold">Especificaciones técnicas</h2>
+            <dl className="mt-3 overflow-hidden rounded-xl border border-border text-sm">
+              {[
+                ["Capacidad seleccionada", `${tons} Ton · ${BTU_BY_TONS[tons].toLocaleString("es-MX")} BTU`],
+                ["Voltaje", voltage],
+                ["Modo", modeLabel],
+                ["Refrigerante", product.specs.refrigerante],
+                ["Nivel de ruido", product.specs.ruido],
+                ["Eficiencia SEER", product.specs.seer],
+                ["Garantía de fábrica", product.specs.garantia],
+              ].map(([k, v], i) => (
+                <div key={k} className={`flex justify-between gap-4 px-4 py-3 ${i % 2 ? "bg-secondary/50" : ""}`}>
+                  <dt className="text-muted-foreground">{k}</dt>
+                  <dd className="text-right font-medium">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-4 flex items-center gap-2 text-[13px] text-muted-foreground">
+              <ShieldCheck className="size-4 text-primary" /> Producto nuevo con factura y garantía.
             </div>
           </div>
         </section>
       </main>
       <SiteFooter />
-      <WhatsAppFab
-        message={`Hola, me interesa el ${product.name} de ${tons} ton, ${voltage}, ${mode}. ¿Precio con instalación?`}
-      />
+      <WhatsAppFab />
     </>
-  );
-}
-
-function Row({ label, value, alt }: { label: string; value: string; alt?: boolean }) {
-  return (
-    <tr className={alt ? "border-b border-border bg-secondary/60" : "border-b border-border"}>
-      <td className="px-4 py-2.5 text-[11px] uppercase tracking-[0.08em] text-muted-foreground">{label}</td>
-      <td className="px-4 py-2.5 text-right">{value}</td>
-    </tr>
-  );
-}
-
-function Group({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="mt-5">
-      <span className="font-mono text-[10px] uppercase tracking-wide text-background/60">{label}</span>
-      <div className="mt-2 flex flex-wrap gap-1.5">{children}</div>
-    </div>
-  );
-}
-
-function Opt({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={
-        active
-          ? "rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
-          : "rounded-md px-3 py-2 text-xs text-background/70 ring-1 ring-background/15"
-      }
-    >
-      {children}
-    </button>
   );
 }
