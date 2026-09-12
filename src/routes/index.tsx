@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { CreditCard, Truck, Wrench, ShieldCheck } from "lucide-react";
+import { CreditCard, Truck, MessageCircle, ShieldCheck } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
@@ -17,12 +17,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Venta e instalación de minisplits Inverter y convencionales en México. Paga hasta 12 meses sin intereses, con refacciones y herramientas HVAC.",
+          "Venta de minisplits Inverter y convencionales en México. Paga hasta 12 meses sin intereses, con refacciones y herramientas HVAC.",
       },
       { property: "og:title", content: "Climas Max | Minisplits a 12 Meses Sin Intereses" },
       {
         property: "og:description",
-        content: "Minisplits garantizados, refacciones y herramientas HVAC con envío e instalación en tu ciudad.",
+        content: "Minisplits garantizados, refacciones y herramientas HVAC con envío a todo el país.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -67,7 +67,7 @@ function Home() {
                 Equipa tu espacio hoy y paga a 12 Meses Sin Intereses
               </h1>
               <p className="mt-4 max-w-[52ch] text-navy-foreground/80">
-                Venta e instalación de minisplits garantizados, además de refacciones y herramientas para técnicos HVAC.
+                Venta de minisplits garantizados, además de refacciones y herramientas para técnicos HVAC.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Link
@@ -100,7 +100,7 @@ function Home() {
             {[
               { icon: CreditCard, t: "12 MSI", d: "Con tarjetas participantes" },
               { icon: Truck, t: "Envío rápido", d: "Cobertura nacional" },
-              { icon: Wrench, t: "Instalación", d: "Técnicos certificados" },
+              { icon: MessageCircle, t: "Atención Personalizada", d: "Por WhatsApp y teléfono" },
               { icon: ShieldCheck, t: "Garantía", d: "Directa de fábrica" },
             ].map(({ icon: Icon, t, d }) => (
               <div key={t} className="flex items-center gap-3">

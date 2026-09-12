@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { cuota12MSI, INSTALL_PRICE, mxn, WHATSAPP_NUMBER } from "@/data/products";
+import { cuota12MSI, mxn, WHATSAPP_NUMBER } from "@/data/products";
 
 export type CartItem = {
   key: string;
@@ -16,8 +16,6 @@ type CartCtx = {
   subtotal: number;
   total: number;
   totalMSI: number;
-  conInstalacion: boolean;
-  setConInstalacion: (v: boolean) => void;
   open: boolean;
   setOpen: (v: boolean) => void;
   add: (item: Omit<CartItem, "qty">, qty?: number) => void;
@@ -32,7 +30,6 @@ const STORAGE_KEY = "climasmax-cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [conInstalacion, setConInstalacion] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -71,8 +68,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clear = useCallback(() => setItems([]), []);
 
   const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
-  const instalacionTotal = conInstalacion ? INSTALL_PRICE * items.reduce((s, i) => s + i.qty, 0) : 0;
-  const total = subtotal + instalacionTotal;
+  const total = subtotal;
   const count = items.reduce((s, i) => s + i.qty, 0);
 
   const whatsappUrl = useMemo(() => {
@@ -81,7 +77,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       "Hola Climas Max, quiero finalizar este pedido:",
       "",
       ...lineas,
-      conInstalacion ? `• Instalación básica profesional: ${mxn(instalacionTotal)}` : "",
       "",
       `Total de contado: ${mxn(total)}`,
       `12 MSI: 12 x ${mxn(cuota12MSI(total))}`,
@@ -89,7 +84,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       .filter(Boolean)
       .join("\n");
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(texto)}`;
-  }, [items, conInstalacion, instalacionTotal, total]);
+  }, [items, total]);
 
   const value: CartCtx = {
     items,
@@ -97,8 +92,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     subtotal,
     total,
     totalMSI: cuota12MSI(total),
-    conInstalacion,
-    setConInstalacion,
     open,
     setOpen,
     add,

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/minisplits")({
       {
         name: "description",
         content:
-          "Compra minisplits de 1, 1.5 y 2 toneladas en 110V o 220V, solo frío o frío y calor. Hasta 12 meses sin intereses e instalación disponible.",
+          "Compra minisplits de 1, 1.5 y 2 toneladas en 110V o 220V, solo frío o frío y calor. Hasta 12 meses sin intereses.",
       },
       { property: "og:title", content: "Minisplits Inverter y Convencionales | Climas Max" },
       { property: "og:description", content: "Catálogo de minisplits con precio de contado y pago a 12 MSI." },
@@ -64,8 +64,8 @@ function MinisplitsPage() {
       <main className="mx-auto max-w-7xl px-4 py-10">
         <h1 className="font-display text-3xl font-extrabold tracking-tight">Minisplits</h1>
         <p className="mt-2 max-w-[60ch] text-sm text-muted-foreground">
-          Elige capacidad, voltaje y modo en la página de cada equipo. Todos los precios incluyen kit de instalación
-          básico de fábrica y pueden pagarse a 12 meses sin intereses.
+          Elige capacidad, voltaje y modo en la página de cada equipo. Todos los precios pueden pagarse a 12 meses sin
+          intereses.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-2">

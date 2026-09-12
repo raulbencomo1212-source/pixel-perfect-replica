@@ -6,7 +6,6 @@ import herramientasImg from "@/assets/herramientas.jpg";
 
 export const WHATSAPP_NUMBER = "528135630444";
 export const MSI_FEE_RATE = 0.135;
-export const INSTALL_PRICE = 1400;
 
 export const cuota12MSI = (precioContado: number) =>
   Math.round((precioContado * (1 + MSI_FEE_RATE)) / 12);
@@ -116,7 +115,7 @@ export const MINISPLITS: Minisplit[] = [
     brand: "Mirage",
     tech: "convencional",
     description:
-      "Equipo convencional fix speed, la opción más accesible para recámaras y oficinas pequeñas. Refacciones disponibles en todo México e instalación sencilla.",
+      "Equipo convencional fix speed, la opción más accesible para recámaras y oficinas pequeñas. Refacciones disponibles en todo México.",
     images: gallery(),
     badges: ["OFERTA -30%"],
     specs: { refrigerante: "R410A", ruido: "32 dB", seer: "13.0", garantia: "5 años en compresor, 1 año en partes" },

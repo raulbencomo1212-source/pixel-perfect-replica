@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Tienda de minisplits, refacciones y herramientas HVAC en México. Hasta 12 meses sin intereses con envío e instalación.",
+          "Tienda de minisplits, refacciones y herramientas HVAC en México. Hasta 12 meses sin intereses con envío a todo el país.",
       },
       { name: "author", content: "Climas Max" },
       { property: "og:title", content: "Climas Max · Minisplits a 12 MSI" },
       {
         property: "og:description",
-        content: "Minisplits Inverter y convencionales, refacciones y herramientas con instalación profesional.",
+        content: "Minisplits Inverter y convencionales, refacciones y herramientas con envío a todo el país.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

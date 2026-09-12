@@ -10,7 +10,7 @@ export function SiteFooter() {
             Climas<span className="text-primary">Max</span>
           </div>
           <p className="mt-3 text-sm text-navy-foreground/70">
-            Venta e instalación de minisplits, refacciones y herramientas HVAC en México.
+            Venta de minisplits, refacciones y herramientas HVAC en México.
           </p>
         </div>
         <div className="text-sm">

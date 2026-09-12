@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, PackageCheck, ShieldCheck } from "lucide-react";
+import { Check, Info, ShieldCheck } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/producto/$slug")({
     const name = loaderData?.name ?? "Minisplit";
     const desc = `${name}: configura capacidad, voltaje y modo. Desde ${
       loaderData ? mxn(loaderData.desde) : ""
-    } de contado o 12 meses sin intereses, con kit de instalación básico incluido.`;
+    } de contado o 12 meses sin intereses.`;
     return {
       meta: [
         { title: `${name} — precio y 12 MSI | Climas Max` },
@@ -224,8 +224,8 @@ function ProductoPage() {
             </div>
 
             <div className="mt-4 flex items-start gap-2 rounded-lg bg-amber/15 p-4 text-sm font-medium">
-              <PackageCheck className="mt-0.5 size-5 shrink-0 text-amber-foreground" />
-              Incluye kit de instalación básico de fábrica (tubería y accesorios).
+              <Info className="mt-0.5 size-5 shrink-0 text-amber-foreground" />
+              No incluye instalación: te recomendamos contratar a un técnico certificado en tu zona.
             </div>
           </div>
         </div>
@@ -236,7 +236,7 @@ function ProductoPage() {
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
             <ul className="mt-4 grid gap-2 text-sm">
               {[
-                "Envío e instalación disponible en tu ciudad",
+                "Envío disponible en tu ciudad",
                 "Garantía directa de fábrica",
                 "Asesoría técnica por WhatsApp antes y después de tu compra",
               ].map((t) => (
