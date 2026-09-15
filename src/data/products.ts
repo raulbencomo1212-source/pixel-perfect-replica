@@ -184,7 +184,14 @@ export const MINISPLITS: Minisplit[] = [
     ],
     badges: ["INVERTER AHORRO"],
     specs: { refrigerante: "R32", ruido: "20 dB", seer: "20.0", garantia: "10 años en compresor, 3 años en partes" },
-    precios: matrix(8990),
+    precios: aplicarPreciosReales(matrix(8990), [
+      { tons: "1.0", voltage: "110V", mode: "frio", precioProveedor: 6979.0 },
+      { tons: "1.0", voltage: "220V", mode: "frio", precioProveedor: 6479.99 },
+      { tons: "1.0", voltage: "220V", mode: "friocalor", precioProveedor: 6783.0 },
+      { tons: "1.5", voltage: "220V", mode: "frio", precioProveedor: 8999.99 },
+      { tons: "1.5", voltage: "220V", mode: "friocalor", precioProveedor: 9979.99 },
+      { tons: "2.0", voltage: "220V", mode: "frio", precioProveedor: 11200.0 },
+    ]),
   },
   {
     id: "life12",
@@ -203,6 +210,7 @@ export const MINISPLITS: Minisplit[] = [
     specs: { refrigerante: "R410A", ruido: "32 dB", seer: "13.0", garantia: "5 años en compresor, 1 año en partes" },
     precios: aplicarPreciosReales(matrix(6490), [
       { tons: "1.0", voltage: "110V", mode: "friocalor", precioProveedor: 6299.0 },
+      { tons: "2.0", voltage: "220V", mode: "frio", precioProveedor: 10590.0 },
     ]),
   },
   {
