@@ -12,6 +12,8 @@ import life12Lateral from "@/assets/life12-lateral.jpg";
 import magnum22Frontal from "@/assets/magnum22-frontal.jpg";
 import magnum22Kit from "@/assets/magnum22-kit.jpg";
 import magnum22Lateral from "@/assets/magnum22-lateral.jpg";
+import x5Frontal from "@/assets/x5-frontal.jpg";
+import x5Lateral from "@/assets/x5-lateral.jpg";
 import condensador from "@/assets/minisplit-condensador.jpg";
 import control from "@/assets/minisplit-control.jpg";
 import refaccionesImg from "@/assets/refacciones.jpg";
@@ -166,6 +168,22 @@ export const MINISPLITS: Minisplit[] = [
     badges: ["OFERTA -30%"],
     specs: { refrigerante: "R410A", ruido: "32 dB", seer: "13.0", garantia: "5 años en compresor, 1 año en partes" },
     precios: matrix(6490),
+  },
+  {
+    id: "x5",
+    slug: "mirage-x5",
+    name: "Mirage X5",
+    brand: "Mirage",
+    tech: "convencional",
+    description:
+      "Convencional de alto flujo de aire para salas y locales comerciales. Filtro lavable antibacterial y gabinete reforzado.",
+    images: [
+      { src: x5Frontal, label: "Vista frontal" },
+      { src: x5Lateral, label: "Vista lateral" },
+    ],
+    badges: ["MÁS VENDIDO"],
+    specs: { refrigerante: "R410A", ruido: "35 dB", seer: "13.5", garantia: "5 años en compresor, 1 año en partes" },
+    precios: matrix(7190),
   },
   {
     id: "magnum22",
