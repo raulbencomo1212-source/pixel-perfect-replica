@@ -63,6 +63,22 @@ const gallery = (): { src: string; label: string }[] => [
   { src: control, label: "Control remoto" },
 ];
 
+/**
+ * Costo de envio por tonelada (guia o guias combinadas de condensador + evaporador),
+ * ya redondeado hacia arriba a partir de cotizaciones reales a un destino lejano
+ * (Monterrey -> Guerrero, via Estafeta/Enviatodo):
+ *  - 1.0 Ton: $392.40 real -> $400
+ *  - 1.5 Ton: $451.91 real -> $500
+ *  - 2.0 Ton: $673.09 real (2 guias) -> $700
+ * Este costo ya viene sumado dentro del precio mostrado (no se desglosa aparte en el carrito).
+ */
+export const SHIPPING_BY_TONS: Record<Tons, number> = { "1.0": 400, "1.5": 500, "2.0": 700 };
+
+/** Redondea hacia arriba al siguiente precio terminado en 999 (ej. 12,700 -> 12,999). */
+function redondearA999(n: number): number {
+  return Math.ceil((n + 1) / 1000) * 1000 - 1;
+}
+
 function matrix(base: number): Record<string, number> {
   const tonFactor: Record<Tons, number> = { "1.0": 1, "1.5": 1.42, "2.0": 1.86 };
   const out: Record<string, number> = {};
@@ -70,10 +86,14 @@ function matrix(base: number): Record<string, number> {
     for (const voltage of VOLTAGES) {
       if (!isVoltageAvailable(tons, voltage)) continue;
       for (const m of MODES) {
-        const price =
+        const precioBase =
           Math.round(
             (base * tonFactor[tons] + (m.key === "friocalor" ? 1400 : 0) + (voltage === "220V" ? 350 : 0)) / 10,
           ) * 10;
+        const envio = SHIPPING_BY_TONS[tons];
+        const precioConEnvio = precioBase + envio;
+        // Solo se redondea a "...999" cuando el envio es de $500 o mas (1.5 y 2.0 Ton).
+        const price = envio >= 500 ? redondearA999(precioConEnvio) : precioConEnvio;
         out[priceKey(tons, voltage, m.key)] = price;
       }
     }
