@@ -6,6 +6,9 @@ import inverterxKit from "@/assets/inverterx-kit-control.jpg";
 import x32Condensador from "@/assets/x32-condensador.jpg";
 import x32Frontal from "@/assets/x32-frontal.jpg";
 import x32Kit from "@/assets/x32-kit.jpg";
+import life12Frontal from "@/assets/life12-frontal.jpg";
+import life12Kit from "@/assets/life12-kit.jpg";
+import life12Lateral from "@/assets/life12-lateral.jpg";
 import condensador from "@/assets/minisplit-condensador.jpg";
 import control from "@/assets/minisplit-control.jpg";
 import refaccionesImg from "@/assets/refacciones.jpg";
@@ -152,7 +155,11 @@ export const MINISPLITS: Minisplit[] = [
     tech: "convencional",
     description:
       "Equipo convencional fix speed, la opción más accesible para recámaras y oficinas pequeñas. Refacciones disponibles en todo México.",
-    images: gallery(),
+    images: [
+      { src: life12Frontal, label: "Vista frontal" },
+      { src: life12Kit, label: "Kit completo" },
+      { src: life12Lateral, label: "Vista lateral" },
+    ],
     badges: ["OFERTA -30%"],
     specs: { refrigerante: "R410A", ruido: "32 dB", seer: "13.0", garantia: "5 años en compresor, 1 año en partes" },
     precios: matrix(6490),
