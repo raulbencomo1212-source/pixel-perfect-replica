@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { BTU_BY_TONS, recomendar, type Zona } from "@/data/products";
 
-const ZONAS: Zona[] = ["Templada", "Cálida", "Extrema"];
+const ZONAS: Zona[] = ["Templada", "Cálida", "Fría"];
 
 export function CapacityCalculator() {
   const [m2, setM2] = useState(18);

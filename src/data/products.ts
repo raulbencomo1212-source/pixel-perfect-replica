@@ -368,10 +368,10 @@ export const getMinisplit = (slug: string) => MINISPLITS.find((p) => p.slug === 
 export const getSimple = (slug: string) =>
   [...REFACCIONES, ...HERRAMIENTAS].find((p) => p.slug === slug);
 
-export type Zona = "Templada" | "Cálida" | "Extrema";
+export type Zona = "Templada" | "Cálida" | "Fría";
 
 export function recomendar(m2: number, zona: Zona, personas: number, solDirecto: boolean) {
-  const zonaFactor = { Templada: 1, Cálida: 1.12, Extrema: 1.25 }[zona];
+  const zonaFactor = { Templada: 1, Cálida: 1.12, Fría: 1.25 }[zona];
   const btuRaw = (m2 * 600 * zonaFactor + Math.max(0, personas - 1) * 600) * (solDirecto ? 1.15 : 1);
   const tons: Tons = btuRaw <= 12000 ? "1.0" : btuRaw <= 18000 ? "1.5" : "2.0";
   return { btu: Math.round(btuRaw / 500) * 500, tons, recomendado: BTU_BY_TONS[tons] };
