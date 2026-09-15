@@ -8,7 +8,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { MinisplitCard, SimpleCard } from "@/components/ProductCard";
 import { CapacityCalculator } from "@/components/CapacityCalculator";
 import { HERRAMIENTAS, MINISPLITS, REFACCIONES, TONS_LIST, type Tech, type Tons } from "@/data/products";
-import heroImg from "@/assets/minisplit-evaporador.jpg";
+import heroImg from "@/assets/hero-sala.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -87,9 +87,9 @@ function Home() {
             </div>
             <img
               src={heroImg}
-              alt="Minisplit instalado en una pared blanca"
-              width={1200}
-              height={900}
+              alt="Minisplit enfriando una sala moderna"
+              width={1600}
+              height={893}
               className="w-full rounded-2xl object-cover shadow-xl"
             />
           </div>
