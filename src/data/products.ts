@@ -89,9 +89,40 @@ const gallery = (): { src: string; label: string }[] => [
  */
 export const SHIPPING_BY_TONS: Record<Tons, number> = { "1.0": 400, "1.5": 500, "2.0": 700 };
 
+/**
+ * Cargo fijo por tonelada que se suma al precio real del proveedor (ademas del envio),
+ * segun instruccion de Raul: 1.0 Ton +$600, 1.5 Ton +$800, 2.0 Ton +$1200.
+ */
+export const CARGO_BY_TONS: Record<Tons, number> = { "1.0": 600, "1.5": 800, "2.0": 1200 };
+
 /** Redondea hacia arriba al siguiente precio terminado en 999 (ej. 12,700 -> 12,999). */
 function redondearA999(n: number): number {
   return Math.ceil((n + 1) / 1000) * 1000 - 1;
+}
+
+/**
+ * Precio final para una variacion con precio REAL de proveedor (capturado de su pagina):
+ * precio_proveedor + cargo_por_tonelada + envio_por_tonelada, redondeado hacia arriba
+ * a terminacion "...999" cuando el envio de esa tonelada es $500 o mas (1.5 y 2.0 Ton).
+ */
+function precioFinalReal(tons: Tons, precioProveedor: number): number {
+  const total = precioProveedor + CARGO_BY_TONS[tons] + SHIPPING_BY_TONS[tons];
+  return SHIPPING_BY_TONS[tons] >= 500 ? redondearA999(total) : Math.round(total);
+}
+
+type PrecioReal = { tons: Tons; voltage: Voltage; mode: ModeKey; precioProveedor: number };
+
+/**
+ * Sobrescribe, dentro de una tabla de precios ya generada (estimada via matrix()),
+ * las variaciones para las que Raul ya mando el precio real del proveedor.
+ * Las variaciones que aun no se confirman quedan con el estimado, para no romper la pagina.
+ */
+function aplicarPreciosReales(precios: Record<string, number>, reales: PrecioReal[]): Record<string, number> {
+  const out = { ...precios };
+  for (const r of reales) {
+    out[priceKey(r.tons, r.voltage, r.mode)] = precioFinalReal(r.tons, r.precioProveedor);
+  }
+  return out;
 }
 
 function matrix(base: number): Record<string, number> {
@@ -133,7 +164,10 @@ export const MINISPLITS: Minisplit[] = [
     ],
     badges: ["MÁS VENDIDO", "INVERTER AHORRO"],
     specs: { refrigerante: "R32", ruido: "19 dB", seer: "21.0", garantia: "10 años en compresor, 3 años en partes" },
-    precios: matrix(8990),
+    precios: aplicarPreciosReales(matrix(8990), [
+      { tons: "1.0", voltage: "220V", mode: "frio", precioProveedor: 5999.99 },
+      { tons: "1.5", voltage: "220V", mode: "friocalor", precioProveedor: 10166.0 },
+    ]),
   },
   {
     id: "x32",
@@ -167,7 +201,9 @@ export const MINISPLITS: Minisplit[] = [
     ],
     badges: ["OFERTA -30%"],
     specs: { refrigerante: "R410A", ruido: "32 dB", seer: "13.0", garantia: "5 años en compresor, 1 año en partes" },
-    precios: matrix(6490),
+    precios: aplicarPreciosReales(matrix(6490), [
+      { tons: "1.0", voltage: "110V", mode: "friocalor", precioProveedor: 6299.0 },
+    ]),
   },
   {
     id: "x5",
@@ -183,7 +219,9 @@ export const MINISPLITS: Minisplit[] = [
     ],
     badges: ["MÁS VENDIDO"],
     specs: { refrigerante: "R410A", ruido: "35 dB", seer: "13.5", garantia: "5 años en compresor, 1 año en partes" },
-    precios: matrix(7190),
+    precios: aplicarPreciosReales(matrix(7190), [
+      { tons: "1.0", voltage: "220V", mode: "frio", precioProveedor: 4850.0 },
+    ]),
   },
   {
     id: "magnum22",
@@ -200,7 +238,10 @@ export const MINISPLITS: Minisplit[] = [
     ],
     badges: ["INVERTER AHORRO"],
     specs: { refrigerante: "R32", ruido: "22 dB", seer: "19.5", garantia: "10 años en compresor, 3 años en partes" },
-    precios: matrix(9790),
+    precios: aplicarPreciosReales(matrix(9790), [
+      { tons: "1.0", voltage: "220V", mode: "friocalor", precioProveedor: 8400.0 },
+      { tons: "2.0", voltage: "220V", mode: "friocalor", precioProveedor: 15999.0 },
+    ]),
   },
 ];
 
