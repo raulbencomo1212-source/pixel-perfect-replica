@@ -1,4 +1,8 @@
 import evaporador from "@/assets/minisplit-evaporador.jpg";
+import inverterxEvap1 from "@/assets/inverterx-evaporador-1.png";
+import inverterxCondensador from "@/assets/inverterx-condensador.jpg";
+import inverterxEvap2 from "@/assets/inverterx-evaporador-2.png";
+import inverterxKit from "@/assets/inverterx-kit-control.jpg";
 import condensador from "@/assets/minisplit-condensador.jpg";
 import control from "@/assets/minisplit-control.jpg";
 import refaccionesImg from "@/assets/refacciones.jpg";
@@ -110,7 +114,12 @@ export const MINISPLITS: Minisplit[] = [
     tech: "inverter",
     description:
       "Minisplit Inverter con refrigerante ecológico R32, compresor de velocidad variable y hasta 60% de ahorro de energía frente a un equipo convencional. Operación silenciosa y control WiFi opcional.",
-    images: gallery(),
+    images: [
+      { src: inverterxEvap1, label: "Evaporador" },
+      { src: inverterxCondensador, label: "Condensador exterior" },
+      { src: inverterxEvap2, label: "Vista frontal" },
+      { src: inverterxKit, label: "Kit completo con control" },
+    ],
     badges: ["MÁS VENDIDO", "INVERTER AHORRO"],
     specs: { refrigerante: "R32", ruido: "19 dB", seer: "21.0", garantia: "10 años en compresor, 3 años en partes" },
     precios: matrix(8990),
