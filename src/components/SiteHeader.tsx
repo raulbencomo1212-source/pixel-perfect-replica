@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, ShoppingCart, Snowflake, Wrench, Cpu, Calculator } from "lucide-react";
+import { Menu, ShoppingCart, Snowflake, Wrench, Cpu, Calculator, Home } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useCart } from "@/lib/cart";
 
@@ -16,6 +16,7 @@ export function SiteHeader() {
       </div>
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
+          <div className="flex items-center gap-2">
           <Sheet open={menu} onOpenChange={setMenu}>
             <SheetTrigger
               aria-label="Abrir menú"
@@ -86,6 +87,15 @@ export function SiteHeader() {
               </nav>
             </SheetContent>
           </Sheet>
+
+          <Link
+            to="/"
+            aria-label="Ir al inicio"
+            className="inline-flex size-10 items-center justify-center rounded-md border border-border text-foreground transition hover:bg-secondary"
+          >
+            <Home className="size-5" />
+          </Link>
+          </div>
 
           <Link to="/" className="font-display text-xl font-bold tracking-tight sm:text-2xl">
             Climas<span className="text-primary">Max</span>

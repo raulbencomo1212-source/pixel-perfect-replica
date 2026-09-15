@@ -14,7 +14,7 @@ import heroImg from "@/assets/hero-sala.jpg";
  * En el inicio solo se muestran estos 3 (mas vendidos / oferta), para que en movil
  * no haya que scrollear tanto. El catalogo completo sigue disponible en /minisplits.
  */
-const DESTACADOS_HOME = ["inverterx", "life12", "x5"];
+const DESTACADOS_HOME = ["x32", "life12", "x5"];
 
 export const Route = createFileRoute("/")({
   head: () => ({
