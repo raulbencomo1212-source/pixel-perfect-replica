@@ -4,7 +4,7 @@ import { WHATSAPP_NUMBER } from "@/data/products";
 export function WhatsAppFab() {
   return (
     <a
-      href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20Climas%20Max,%20me%20gustar%C3%ADa%20cotizar%20un%20minisplit`}
+      href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20ClimasMax,%20me%20gustar%C3%ADa%20cotizar%20un%20minisplit`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Cotizar por WhatsApp"

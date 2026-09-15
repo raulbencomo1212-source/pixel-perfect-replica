@@ -74,7 +74,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const whatsappUrl = useMemo(() => {
     const lineas = items.map((i) => `• ${i.qty} x ${i.name}${i.detalle ? ` — ${i.detalle}` : ""} = ${mxn(i.price * i.qty)}`);
     const texto = [
-      "Hola Climas Max, quiero finalizar este pedido:",
+      "Hola ClimasMax, quiero finalizar este pedido:",
       "",
       ...lineas,
       "",
