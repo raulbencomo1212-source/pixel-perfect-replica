@@ -10,6 +10,12 @@ import { CapacityCalculator } from "@/components/CapacityCalculator";
 import { MINISPLITS, TONS_LIST, type Tech, type Tons } from "@/data/products";
 import heroImg from "@/assets/hero-sala.jpg";
 
+/**
+ * En el inicio solo se muestran estos 3 (mas vendidos / oferta), para que en movil
+ * no haya que scrollear tanto. El catalogo completo sigue disponible en /minisplits.
+ */
+const DESTACADOS_HOME = ["inverterx", "life12", "x5"];
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -35,7 +41,8 @@ function Home() {
   const [tech, setTech] = useState<Tech | undefined>(undefined);
   const [tons, setTons] = useState<Tons | undefined>(undefined);
 
-  const visibles = MINISPLITS.filter((p) => (!tech || p.tech === tech) && (!tons || TONS_LIST.includes(tons)));
+  const destacados = MINISPLITS.filter((p) => DESTACADOS_HOME.includes(p.id));
+  const visibles = destacados.filter((p) => (!tech || p.tech === tech) && (!tons || TONS_LIST.includes(tons)));
 
   const pills: { label: string; active: boolean; onClick: () => void }[] = [
     { label: "Todos", active: !tech && !tons, onClick: () => { setTech(undefined); setTons(undefined); } },
