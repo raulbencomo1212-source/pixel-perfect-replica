@@ -9,6 +9,9 @@ import x32Kit from "@/assets/x32-kit.jpg";
 import life12Frontal from "@/assets/life12-frontal.jpg";
 import life12Kit from "@/assets/life12-kit.jpg";
 import life12Lateral from "@/assets/life12-lateral.jpg";
+import magnum22Frontal from "@/assets/magnum22-frontal.jpg";
+import magnum22Kit from "@/assets/magnum22-kit.jpg";
+import magnum22Lateral from "@/assets/magnum22-lateral.jpg";
 import condensador from "@/assets/minisplit-condensador.jpg";
 import control from "@/assets/minisplit-control.jpg";
 import refaccionesImg from "@/assets/refacciones.jpg";
@@ -172,7 +175,11 @@ export const MINISPLITS: Minisplit[] = [
     tech: "inverter",
     description:
       "Inverter reforzado para clima extremo: enfría con hasta 48 °C exteriores, serpentín con recubrimiento anticorrosivo y arranque suave que protege tu instalación eléctrica.",
-    images: gallery(),
+    images: [
+      { src: magnum22Frontal, label: "Vista frontal" },
+      { src: magnum22Kit, label: "Kit completo" },
+      { src: magnum22Lateral, label: "Vista lateral" },
+    ],
     badges: ["INVERTER AHORRO"],
     specs: { refrigerante: "R32", ruido: "22 dB", seer: "19.5", garantia: "10 años en compresor, 3 años en partes" },
     precios: matrix(9790),
