@@ -3,6 +3,9 @@ import inverterxEvap1 from "@/assets/inverterx-evaporador-1.png";
 import inverterxCondensador from "@/assets/inverterx-condensador.jpg";
 import inverterxEvap2 from "@/assets/inverterx-evaporador-2.png";
 import inverterxKit from "@/assets/inverterx-kit-control.jpg";
+import x32Condensador from "@/assets/x32-condensador.jpg";
+import x32Frontal from "@/assets/x32-frontal.jpg";
+import x32Kit from "@/assets/x32-kit.jpg";
 import condensador from "@/assets/minisplit-condensador.jpg";
 import control from "@/assets/minisplit-control.jpg";
 import refaccionesImg from "@/assets/refacciones.jpg";
@@ -107,9 +110,9 @@ function matrix(base: number): Record<string, number> {
 
 export const MINISPLITS: Minisplit[] = [
   {
-    id: "xr32",
-    slug: "mirage-xr32-inverter",
-    name: "Mirage XR32 Inverter",
+    id: "inverterx",
+    slug: "mirage-inverter-x",
+    name: "Mirage Inverter X",
     brand: "Mirage",
     tech: "inverter",
     description:
@@ -125,17 +128,21 @@ export const MINISPLITS: Minisplit[] = [
     precios: matrix(8990),
   },
   {
-    id: "magnum22",
-    slug: "mirage-magnum-22",
-    name: "Mirage Magnum 22",
+    id: "x32",
+    slug: "mirage-x32-inverter",
+    name: "Mirage X32 Inverter",
     brand: "Mirage",
     tech: "inverter",
     description:
-      "Inverter reforzado para clima extremo: enfría con hasta 48 °C exteriores, serpentín con recubrimiento anticorrosivo y arranque suave que protege tu instalación eléctrica.",
-    images: gallery(),
+      "Minisplit Inverter con refrigerante ecológico R32, compresor de velocidad variable y operación silenciosa. Ideal para recámaras y oficinas.",
+    images: [
+      { src: x32Condensador, label: "Condensador exterior" },
+      { src: x32Frontal, label: "Vista frontal" },
+      { src: x32Kit, label: "Kit completo" },
+    ],
     badges: ["INVERTER AHORRO"],
-    specs: { refrigerante: "R32", ruido: "22 dB", seer: "19.5", garantia: "10 años en compresor, 3 años en partes" },
-    precios: matrix(9790),
+    specs: { refrigerante: "R32", ruido: "20 dB", seer: "20.0", garantia: "10 años en compresor, 3 años en partes" },
+    precios: matrix(8990),
   },
   {
     id: "life12",
@@ -151,17 +158,17 @@ export const MINISPLITS: Minisplit[] = [
     precios: matrix(6490),
   },
   {
-    id: "x5",
-    slug: "mirage-x5",
-    name: "Mirage X5",
+    id: "magnum22",
+    slug: "mirage-magnum-22",
+    name: "Mirage Magnum 22",
     brand: "Mirage",
-    tech: "convencional",
+    tech: "inverter",
     description:
-      "Convencional de alto flujo de aire para salas y locales comerciales. Filtro lavable antibacterial y gabinete reforzado.",
+      "Inverter reforzado para clima extremo: enfría con hasta 48 °C exteriores, serpentín con recubrimiento anticorrosivo y arranque suave que protege tu instalación eléctrica.",
     images: gallery(),
-    badges: ["MÁS VENDIDO"],
-    specs: { refrigerante: "R410A", ruido: "35 dB", seer: "13.5", garantia: "5 años en compresor, 1 año en partes" },
-    precios: matrix(7190),
+    badges: ["INVERTER AHORRO"],
+    specs: { refrigerante: "R32", ruido: "22 dB", seer: "19.5", garantia: "10 años en compresor, 3 años en partes" },
+    precios: matrix(9790),
   },
 ];
 
