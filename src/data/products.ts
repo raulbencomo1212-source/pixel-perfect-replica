@@ -122,6 +122,20 @@ function aplicarPreciosReales(precios: Record<string, number>, reales: PrecioRea
   for (const r of reales) {
     out[priceKey(r.tons, r.voltage, r.mode)] = precioFinalReal(r.tons, r.precioProveedor);
   }
+  // Si para una combinacion tonelada+voltaje solo se confirmo un modo (Solo Frio o
+  // Frio y Calor), el otro modo esta agotado con el proveedor por ahora: mientras se
+  // confirma, se usa temporalmente el mismo precio del modo que si esta disponible
+  // (indicacion de Raul, para no dejar el espacio vacio en la pagina).
+  const combos = new Set(reales.map((r) => `${r.tons}|${r.voltage}`));
+  for (const combo of combos) {
+    const [tons, voltage] = combo.split("|") as [Tons, Voltage];
+    const modosConfirmados = reales.filter((r) => r.tons === tons && r.voltage === voltage);
+    if (modosConfirmados.length === 1) {
+      const modoPresente = modosConfirmados[0].mode;
+      const modoFaltante: ModeKey = modoPresente === "frio" ? "friocalor" : "frio";
+      out[priceKey(tons, voltage, modoFaltante)] = out[priceKey(tons, voltage, modoPresente)];
+    }
+  }
   return out;
 }
 
