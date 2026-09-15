@@ -5,9 +5,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { CartDrawer } from "@/components/CartDrawer";
-import { MinisplitCard, SimpleCard } from "@/components/ProductCard";
+import { MinisplitCard } from "@/components/ProductCard";
 import { CapacityCalculator } from "@/components/CapacityCalculator";
-import { HERRAMIENTAS, MINISPLITS, REFACCIONES, TONS_LIST, type Tech, type Tons } from "@/data/products";
+import { MINISPLITS, TONS_LIST, type Tech, type Tons } from "@/data/products";
 import heroImg from "@/assets/hero-sala.jpg";
 
 export const Route = createFileRoute("/")({
@@ -151,34 +151,6 @@ function Home() {
           </p>
           <div className="mt-6">
             <CapacityCalculator />
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-4 pb-12">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 className="font-display text-2xl font-extrabold tracking-tight">Refacciones más pedidas</h2>
-            <Link to="/refacciones" className="text-sm font-semibold text-primary hover:underline">
-              Ver refacciones →
-            </Link>
-          </div>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {REFACCIONES.slice(0, 4).map((p) => (
-              <SimpleCard key={p.id} product={p} />
-            ))}
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-4 pb-14">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 className="font-display text-2xl font-extrabold tracking-tight">Herramientas para técnicos</h2>
-            <Link to="/herramientas" className="text-sm font-semibold text-primary hover:underline">
-              Ver herramientas →
-            </Link>
-          </div>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {HERRAMIENTAS.slice(0, 4).map((p) => (
-              <SimpleCard key={p.id} product={p} />
-            ))}
           </div>
         </section>
       </main>
