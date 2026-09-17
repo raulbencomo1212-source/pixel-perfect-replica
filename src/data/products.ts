@@ -42,7 +42,7 @@ export const MODES: { key: ModeKey; label: string }[] = [
 
 export const BTU_BY_TONS: Record<Tons, number> = { "1.0": 12000, "1.5": 18000, "2.0": 24000 };
 
-export type Badge = "MÁS VENDIDO" | "OFERTA -30%" | "INVERTER AHORRO";
+export type Badge = "MÁS VENDIDO" | "OFERTA -30%" | "OFERTA" | "INVERTER AHORRO";
 
 export type Minisplit = {
   id: string;
@@ -56,6 +56,8 @@ export type Minisplit = {
   specs: { refrigerante: string; ruido: string; seer: string; garantia: string };
   /** clave: `${tons}-${voltage}-${mode}` */
   precios: Record<string, number>;
+  /** Si es true, se muestra un precio tachado (mas alto) junto al precio real, estilo oferta. */
+  ofertaTachado?: boolean;
 };
 
 export const priceKey = (tons: Tons, voltage: Voltage, mode: ModeKey) => `${tons}-${voltage}-${mode}`;
@@ -70,6 +72,31 @@ export function getPrice(p: Minisplit, tons: Tons, voltage: Voltage, mode: ModeK
 
 export function priceFrom(p: Minisplit): number {
   return Math.min(...Object.values(p.precios));
+}
+
+/**
+ * Incremento "de aparador" por tonelada que se le suma al precio real para mostrarlo
+ * tachado como precio anterior (solo estetico, el precio que se cobra sigue siendo
+ * el real calculado con envio + cargo). Indicacion de Raul: 1.0 Ton +1100,
+ * 1.5 Ton +1200, 2.0 Ton +1500.
+ */
+export const OFERTA_INCREMENTO_BY_TONS: Record<Tons, number> = { "1.0": 1100, "1.5": 1200, "2.0": 1500 };
+
+/** Precio tachado (mas alto) para una variacion especifica, o undefined si el producto no tiene oferta. */
+export function precioAntes(p: Minisplit, tons: Tons, voltage: Voltage, mode: ModeKey): number | undefined {
+  if (!p.ofertaTachado) return undefined;
+  const precio = getPrice(p, tons, voltage, mode);
+  if (precio === undefined) return undefined;
+  return precio + OFERTA_INCREMENTO_BY_TONS[tons];
+}
+
+/** Precio tachado correspondiente al precio "desde" (el mas bajo) del producto. */
+export function precioAntesFrom(p: Minisplit): number | undefined {
+  if (!p.ofertaTachado) return undefined;
+  const entries = Object.entries(p.precios);
+  const [minKey, minPrecio] = entries.reduce((a, b) => (b[1] < a[1] ? b : a));
+  const tons = minKey.split("-")[0] as Tons;
+  return minPrecio + OFERTA_INCREMENTO_BY_TONS[tons];
 }
 
 const gallery = (): { src: string; label: string }[] => [
@@ -176,12 +203,13 @@ export const MINISPLITS: Minisplit[] = [
       { src: inverterxEvap2, label: "Vista frontal" },
       { src: inverterxKit, label: "Kit completo con control" },
     ],
-    badges: ["MÁS VENDIDO", "INVERTER AHORRO"],
+    badges: ["MÁS VENDIDO", "OFERTA", "INVERTER AHORRO"],
     specs: { refrigerante: "R32", ruido: "19 dB", seer: "21.0", garantia: "10 años en compresor, 3 años en partes" },
     precios: aplicarPreciosReales(matrix(8990), [
       { tons: "1.0", voltage: "220V", mode: "frio", precioProveedor: 5999.99 },
       { tons: "1.5", voltage: "220V", mode: "friocalor", precioProveedor: 10166.0 },
     ]),
+    ofertaTachado: true,
   },
   {
     id: "x32",
@@ -196,7 +224,7 @@ export const MINISPLITS: Minisplit[] = [
       { src: x32Frontal, label: "Vista frontal" },
       { src: x32Kit, label: "Kit completo" },
     ],
-    badges: ["INVERTER AHORRO"],
+    badges: ["OFERTA", "INVERTER AHORRO"],
     specs: { refrigerante: "R32", ruido: "20 dB", seer: "20.0", garantia: "10 años en compresor, 3 años en partes" },
     precios: aplicarPreciosReales(matrix(8990), [
       { tons: "1.0", voltage: "110V", mode: "frio", precioProveedor: 6979.0 },
@@ -206,6 +234,7 @@ export const MINISPLITS: Minisplit[] = [
       { tons: "1.5", voltage: "220V", mode: "friocalor", precioProveedor: 9979.99 },
       { tons: "2.0", voltage: "220V", mode: "frio", precioProveedor: 11200.0 },
     ]),
+    ofertaTachado: true,
   },
   {
     id: "life12",
@@ -220,12 +249,13 @@ export const MINISPLITS: Minisplit[] = [
       { src: life12Kit, label: "Kit completo" },
       { src: life12Lateral, label: "Vista lateral" },
     ],
-    badges: ["OFERTA -30%"],
+    badges: ["OFERTA"],
     specs: { refrigerante: "R410A", ruido: "32 dB", seer: "13.0", garantia: "5 años en compresor, 1 año en partes" },
     precios: aplicarPreciosReales(matrix(6490), [
       { tons: "1.0", voltage: "110V", mode: "friocalor", precioProveedor: 6299.0 },
       { tons: "2.0", voltage: "220V", mode: "frio", precioProveedor: 10590.0 },
     ]),
+    ofertaTachado: true,
   },
   {
     id: "x5",
@@ -239,11 +269,12 @@ export const MINISPLITS: Minisplit[] = [
       { src: x5Frontal, label: "Vista frontal" },
       { src: x5Lateral, label: "Vista lateral" },
     ],
-    badges: ["MÁS VENDIDO"],
+    badges: ["MÁS VENDIDO", "OFERTA"],
     specs: { refrigerante: "R410A", ruido: "35 dB", seer: "13.5", garantia: "5 años en compresor, 1 año en partes" },
     precios: aplicarPreciosReales(matrix(7190), [
       { tons: "1.0", voltage: "220V", mode: "frio", precioProveedor: 4850.0 },
     ]),
+    ofertaTachado: true,
   },
   {
     id: "magnum22",

@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { cuota12MSI, mxn, priceFrom, type Badge, type Minisplit, type SimpleProduct } from "@/data/products";
+import { cuota12MSI, mxn, precioAntesFrom, priceFrom, type Badge, type Minisplit, type SimpleProduct } from "@/data/products";
 import { useCart } from "@/lib/cart";
 
 function BadgePill({ badge }: { badge: Badge }) {
   const styles: Record<Badge, string> = {
     "MÁS VENDIDO": "bg-amber text-amber-foreground",
     "OFERTA -30%": "bg-destructive text-destructive-foreground",
+    "OFERTA": "bg-primary text-primary-foreground",
     "INVERTER AHORRO": "bg-emerald text-emerald-foreground",
   };
   return <span className={`rounded px-2 py-1 text-[10px] font-bold tracking-wide ${styles[badge]}`}>{badge}</span>;
@@ -13,6 +14,7 @@ function BadgePill({ badge }: { badge: Badge }) {
 
 export function MinisplitCard({ product }: { product: Minisplit }) {
   const desde = priceFrom(product);
+  const antes = precioAntesFrom(product);
   const first = product.images[0]!;
 
   return (
@@ -49,7 +51,10 @@ export function MinisplitCard({ product }: { product: Minisplit }) {
           <div className="font-display text-xl font-extrabold leading-tight text-primary">
             Llévatelo a 12 MSI desde {mxn(cuota12MSI(desde))} / mes
           </div>
-          <div className="mt-1 text-[13px] text-muted-foreground">o {mxn(desde)} de contado</div>
+          <div className="mt-1 text-[13px] text-muted-foreground">
+            o {antes && <span className="mr-1 line-through">{mxn(antes)}</span>}
+            {mxn(desde)} de contado
+          </div>
         </div>
         <div className="mt-4 rounded-md bg-secondary py-2 text-center text-[13px] font-semibold text-foreground transition group-hover:bg-primary group-hover:text-primary-foreground">
           Ver detalles y configurar

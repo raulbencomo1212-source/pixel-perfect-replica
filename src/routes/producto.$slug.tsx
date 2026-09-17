@@ -14,6 +14,7 @@ import {
   cuota12MSI,
   getMinisplit,
   getPrice,
+  precioAntes,
   isVoltageAvailable,
   mxn,
   priceFrom,
@@ -64,6 +65,7 @@ function ProductoPage() {
   };
 
   const price = getPrice(product, tons, voltage, mode) ?? priceFrom(product);
+  const antes = precioAntes(product, tons, voltage, mode);
   const modeLabel = MODES.find((m) => m.key === mode)!.label;
   const detalle = `${tons} Ton · ${voltage} · ${modeLabel}`;
   const hero = product.images[img] ?? product.images[0]!;
@@ -188,7 +190,12 @@ function ProductoPage() {
             </div>
 
             <div className="mt-6 rounded-xl border border-border bg-secondary/50 p-5">
-              <div className="font-display text-4xl font-extrabold tracking-tight">{mxn(price)} MXN</div>
+              <div className="flex flex-wrap items-baseline gap-3">
+                {antes && (
+                  <span className="text-lg font-semibold text-muted-foreground line-through">{mxn(antes)}</span>
+                )}
+                <div className="font-display text-4xl font-extrabold tracking-tight">{mxn(price)} MXN</div>
+              </div>
               <div className="mt-2 rounded-lg bg-emerald/10 px-4 py-3 font-semibold text-emerald">
                 12 mensualidades de {mxn(cuota12MSI(price))} a Meses Sin Intereses
               </div>
