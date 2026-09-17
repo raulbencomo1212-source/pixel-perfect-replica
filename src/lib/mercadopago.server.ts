@@ -37,7 +37,7 @@ function precioAutoritativo(item: ItemCarritoInput): number {
  * Si no encuentra la variable, truena con un mensaje claro en vez de fallar en silencio.
  */
 function credencialMercadoPago(): string {
-  const token = typeof process !== "undefined" ? process.env?.MP_ACCESS_TOKEN : undefined;
+  const token = typeof process !== "undefined" ? process.env?.["MP_ACCESS_TOKEN"] : undefined;
   if (!token) {
     throw new Error(
       "Falta configurar MP_ACCESS_TOKEN (variable de entorno / secreto de Mercado Pago). " +
