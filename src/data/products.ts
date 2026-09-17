@@ -125,9 +125,14 @@ export const SHIPPING_BY_TONS: Record<Tons, number> = { "1.0": 400, "1.5": 500, 
  */
 export const CARGO_BY_TONS: Record<Tons, number> = { "1.0": 600, "1.5": 800, "2.0": 1200 };
 
-/** Redondea hacia arriba al siguiente precio terminado en 999 (ej. 12,700 -> 12,999). */
-function redondearA999(n: number): number {
-  return Math.ceil((n + 1) / 1000) * 1000 - 1;
+/**
+ * Redondea hacia arriba al siguiente precio terminado en "...499" o "...999"
+ * (bloques de $500). Ej: 12,927 -> 12,999 | 13,400 -> 13,499 | 13,700 -> 13,999.
+ * Se aplica siempre, para que el precio final se vea "limpio" en la pagina
+ * sin importar el recargo o los estimados que se le hayan sumado antes.
+ */
+function redondearA499o999(n: number): number {
+  return Math.ceil((n + 1) / 500) * 500 - 1;
 }
 
 /**
@@ -143,13 +148,13 @@ export const RECARGO_CONTADO_RATE = 0.035;
 /**
  * Precio final para una variacion con precio REAL de proveedor (capturado de su pagina):
  * (precio_proveedor + cargo_por_tonelada + envio_por_tonelada) + recargo de contado 3.5%,
- * redondeado hacia arriba a terminacion "...999" cuando el envio de esa tonelada es
- * $500 o mas (1.5 y 2.0 Ton).
+ * redondeado siempre hacia arriba a terminacion "...499" o "...999" (bloques de $500),
+ * para que se vea limpio en la pagina.
  */
 function precioFinalReal(tons: Tons, precioProveedor: number): number {
   const subtotal = precioProveedor + CARGO_BY_TONS[tons] + SHIPPING_BY_TONS[tons];
   const total = subtotal * (1 + RECARGO_CONTADO_RATE);
-  return SHIPPING_BY_TONS[tons] >= 500 ? redondearA999(total) : Math.round(total);
+  return redondearA499o999(total);
 }
 
 type PrecioReal = { tons: Tons; voltage: Voltage; mode: ModeKey; precioProveedor: number };
@@ -194,8 +199,7 @@ function matrix(base: number): Record<string, number> {
           ) * 10;
         const envio = SHIPPING_BY_TONS[tons];
         const precioConEnvio = (precioBase + envio) * (1 + RECARGO_CONTADO_RATE);
-        // Solo se redondea a "...999" cuando el envio es de $500 o mas (1.5 y 2.0 Ton).
-        const price = envio >= 500 ? redondearA999(precioConEnvio) : Math.round(precioConEnvio);
+        const price = redondearA499o999(precioConEnvio);
         out[priceKey(tons, voltage, m.key)] = price;
       }
     }
