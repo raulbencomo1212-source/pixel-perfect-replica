@@ -131,12 +131,24 @@ function redondearA999(n: number): number {
 }
 
 /**
+ * Recargo del 3.5% que se aplica a TODOS los minisplits sobre su precio de contado
+ * (y por lo tanto tambien sobre el precio tachado, que se calcula a partir del de
+ * contado). Cubre la comision real que cobra Mercado Pago por cobros con tarjeta de
+ * credito, debito o vale de despensa, mas un colchon para gastos indirectos dificiles
+ * de rastrear por unidad (material de empaque, impresiones, gasolina, mano de obra
+ * para dejar los paquetes en la paqueteria). Indicacion de Raul.
+ */
+export const RECARGO_CONTADO_RATE = 0.035;
+
+/**
  * Precio final para una variacion con precio REAL de proveedor (capturado de su pagina):
- * precio_proveedor + cargo_por_tonelada + envio_por_tonelada, redondeado hacia arriba
- * a terminacion "...999" cuando el envio de esa tonelada es $500 o mas (1.5 y 2.0 Ton).
+ * (precio_proveedor + cargo_por_tonelada + envio_por_tonelada) + recargo de contado 3.5%,
+ * redondeado hacia arriba a terminacion "...999" cuando el envio de esa tonelada es
+ * $500 o mas (1.5 y 2.0 Ton).
  */
 function precioFinalReal(tons: Tons, precioProveedor: number): number {
-  const total = precioProveedor + CARGO_BY_TONS[tons] + SHIPPING_BY_TONS[tons];
+  const subtotal = precioProveedor + CARGO_BY_TONS[tons] + SHIPPING_BY_TONS[tons];
+  const total = subtotal * (1 + RECARGO_CONTADO_RATE);
   return SHIPPING_BY_TONS[tons] >= 500 ? redondearA999(total) : Math.round(total);
 }
 
@@ -181,9 +193,9 @@ function matrix(base: number): Record<string, number> {
             (base * tonFactor[tons] + (m.key === "friocalor" ? 1400 : 0) + (voltage === "220V" ? 350 : 0)) / 10,
           ) * 10;
         const envio = SHIPPING_BY_TONS[tons];
-        const precioConEnvio = precioBase + envio;
+        const precioConEnvio = (precioBase + envio) * (1 + RECARGO_CONTADO_RATE);
         // Solo se redondea a "...999" cuando el envio es de $500 o mas (1.5 y 2.0 Ton).
-        const price = envio >= 500 ? redondearA999(precioConEnvio) : precioConEnvio;
+        const price = envio >= 500 ? redondearA999(precioConEnvio) : Math.round(precioConEnvio);
         out[priceKey(tons, voltage, m.key)] = price;
       }
     }
