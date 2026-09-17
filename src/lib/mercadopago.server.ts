@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { env } from "cloudflare:workers";
 import { MINISPLITS, getPrice, type Tons, type Voltage, type ModeKey } from "@/data/products";
 
 /**
@@ -31,15 +30,14 @@ function precioAutoritativo(item: ItemCarritoInput): number {
 }
 
 /**
- * Busca el Access Token de Mercado Pago primero en los bindings de Cloudflare Workers
- * (produccion; se accede importando "env" desde "cloudflare:workers", la forma oficial
- * documentada por Cloudflare para TanStack Start) y si no en process.env (desarrollo
- * local via .dev.vars). Si no encuentra ninguna, truena con un mensaje claro en vez de
- * fallar en silencio.
+ * Lee el Access Token de Mercado Pago de la variable de entorno MP_ACCESS_TOKEN.
+ * En desarrollo local viene de .dev.vars; en produccion, del Secret configurado en
+ * Lovable (seccion Cloud). Se usa process.env directo (sin importar nada especifico
+ * de Cloudflare) para que el build funcione igual en la vista previa y en produccion.
+ * Si no encuentra la variable, truena con un mensaje claro en vez de fallar en silencio.
  */
 function credencialMercadoPago(): string {
-  const cfEnv = env as Record<string, string | undefined> | undefined;
-  const token = cfEnv?.MP_ACCESS_TOKEN ?? (typeof process !== "undefined" ? process.env?.MP_ACCESS_TOKEN : undefined);
+  const token = typeof process !== "undefined" ? process.env?.MP_ACCESS_TOKEN : undefined;
   if (!token) {
     throw new Error(
       "Falta configurar MP_ACCESS_TOKEN (variable de entorno / secreto de Mercado Pago). " +
