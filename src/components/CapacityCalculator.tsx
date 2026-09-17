@@ -24,7 +24,7 @@ export function CapacityCalculator() {
             id="m2"
             type="range"
             min={8}
-            max={60}
+            max={100}
             step={1}
             value={m2}
             onChange={(e) => setM2(Number(e.target.value))}
