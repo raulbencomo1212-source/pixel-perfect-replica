@@ -1,10 +1,26 @@
+import { useState } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useCart } from "@/lib/cart";
 import { cuota12MSI, mxn } from "@/data/products";
+import { crearCheckoutMercadoPago } from "@/lib/mercadopago.server";
 
 export function CartDrawer() {
   const cart = useCart();
+  const [pagando, setPagando] = useState(false);
+  const [errorPago, setErrorPago] = useState<string | null>(null);
+
+  async function pagarConMercadoPago() {
+    setErrorPago(null);
+    setPagando(true);
+    try {
+      const { url } = await crearCheckoutMercadoPago({ data: { items: cart.items } });
+      window.location.href = url;
+    } catch (err) {
+      setErrorPago(err instanceof Error ? err.message : "No se pudo iniciar el pago. Intenta de nuevo.");
+      setPagando(false);
+    }
+  }
 
   return (
     <Sheet open={cart.open} onOpenChange={cart.setOpen}>
@@ -80,11 +96,20 @@ export function CartDrawer() {
               </div>
             </dl>
 
+            <button
+              type="button"
+              onClick={pagarConMercadoPago}
+              disabled={pagando}
+              className="mt-4 block w-full rounded-md bg-primary px-4 py-3 text-center font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+            >
+              {pagando ? "Redirigiendo a Mercado Pago…" : "Pagar con Mercado Pago"}
+            </button>
+            {errorPago && <p className="mt-2 text-center text-[12px] font-medium text-destructive">{errorPago}</p>}
             <a
               href={cart.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 block rounded-md bg-emerald px-4 py-3 text-center font-semibold text-emerald-foreground transition hover:opacity-90"
+              className="mt-2 block rounded-md bg-emerald px-4 py-3 text-center font-semibold text-emerald-foreground transition hover:opacity-90"
             >
               Finalizar Pedido vía WhatsApp
             </a>
