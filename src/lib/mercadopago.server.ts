@@ -37,7 +37,7 @@ function precioAutoritativo(item: ItemCarritoInput): number {
  * Si no encuentra la variable, truena con un mensaje claro en vez de fallar en silencio.
  */
 function credencialMercadoPago(): string {
-  const token = typeof process !== "undefined" ? process.env?.MP_ACCESS_TOKEN : undefined;
+  const token = typeof process !== "undefined" ? process.env?.["MP_ACCESS_TOKEN"] : undefined;
   if (!token) {
     throw new Error(
       "Falta configurar MP_ACCESS_TOKEN (variable de entorno / secreto de Mercado Pago). " +
@@ -82,6 +82,11 @@ export const crearCheckoutMercadoPago = createServerFn({ method: "POST" })
 
     const externalReference = `climasmax-${Date.now()}`;
 
+    // Mercado Pago solo acepta back_urls publicas (https). En desarrollo local
+    // (localhost / http) las ignora y truena si mandamos auto_return, asi que
+    // en ese caso omitimos ambos campos.
+    const esOrigenPublico = origin.startsWith("https://") && !origin.includes("localhost");
+
     const respuesta = await fetch("https://api.mercadopago.com/checkout/preferences", {
       method: "POST",
       headers: {
@@ -91,12 +96,16 @@ export const crearCheckoutMercadoPago = createServerFn({ method: "POST" })
       body: JSON.stringify({
         items,
         currency_id: "MXN",
-        back_urls: {
-          success: `${origin}/?pago=exito`,
-          failure: `${origin}/?pago=fallo`,
-          pending: `${origin}/?pago=pendiente`,
-        },
-        auto_return: "approved",
+        ...(esOrigenPublico
+          ? {
+              back_urls: {
+                success: `${origin}/?pago=exito`,
+                failure: `${origin}/?pago=fallo`,
+                pending: `${origin}/?pago=pendiente`,
+              },
+              auto_return: "approved",
+            }
+          : {}),
         payment_methods: { installments: 12 },
         statement_descriptor: "CLIMASMAX",
         external_reference: externalReference,

@@ -178,9 +178,10 @@ function aplicarPreciosReales(precios: Record<string, number>, reales: PrecioRea
     const [tons, voltage] = combo.split("|") as [Tons, Voltage];
     const modosConfirmados = reales.filter((r) => r.tons === tons && r.voltage === voltage);
     if (modosConfirmados.length === 1) {
-      const modoPresente = modosConfirmados[0].mode;
+      const modoPresente = modosConfirmados[0]!.mode;
       const modoFaltante: ModeKey = modoPresente === "frio" ? "friocalor" : "frio";
-      out[priceKey(tons, voltage, modoFaltante)] = out[priceKey(tons, voltage, modoPresente)];
+      const precioPresente = out[priceKey(tons, voltage, modoPresente)];
+      if (precioPresente !== undefined) out[priceKey(tons, voltage, modoFaltante)] = precioPresente;
     }
   }
   return out;
@@ -461,10 +462,10 @@ export function recomendar(m2: number, zona: Zona, personas: number, solDirecto:
   const btuRaw = (m2 * 600 * zonaFactor + Math.max(0, personas - 1) * 600) * (solDirecto ? 1.15 : 1);
   const equipos = comboEquipos(btuRaw);
   const recomendado = equipos.reduce((acc, e) => acc + BTU_BY_TONS[e.tons] * e.cantidad, 0);
-  const multiplesEquipos = equipos.length > 1 || equipos[0].cantidad > 1;
+  const multiplesEquipos = equipos.length > 1 || equipos[0]!.cantidad > 1;
   return {
     btu: Math.round(btuRaw / 500) * 500,
-    tons: equipos[0].tons,
+    tons: equipos[0]!.tons,
     recomendado,
     equipos,
     multiplesEquipos,
