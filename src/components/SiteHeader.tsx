@@ -47,7 +47,7 @@ export function SiteHeader() {
                     onClick={close}
                     className="rounded-md px-2 py-2 font-medium text-primary transition hover:bg-secondary"
                   >
-                    Convencional · Económico
+                    Convencional
                   </Link>
                   <Link
                     to="/minisplits"

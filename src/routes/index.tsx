@@ -42,7 +42,11 @@ function Home() {
   const [tons, setTons] = useState<Tons | undefined>(undefined);
 
   const destacados = MINISPLITS.filter((p) => DESTACADOS_HOME.includes(p.id));
-  const visibles = destacados.filter((p) => (!tech || p.tech === tech) && (!tons || TONS_LIST.includes(tons)));
+  // Sin filtro activo se muestran solo los 3 destacados (menos scroll); en cuanto se
+  // filtra por tecnologia o tonelada, se busca en todo el catalogo (ej. Magnum 22 es
+  // inverter pero no es uno de los 3 destacados, y debe aparecer al filtrar Inverter).
+  const catalogoBase = tech || tons ? MINISPLITS : destacados;
+  const visibles = catalogoBase.filter((p) => (!tech || p.tech === tech) && (!tons || TONS_LIST.includes(tons)));
 
   const pills: { label: string; active: boolean; onClick: () => void }[] = [
     { label: "Todos", active: !tech && !tons, onClick: () => { setTech(undefined); setTons(undefined); } },
