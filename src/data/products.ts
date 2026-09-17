@@ -370,9 +370,53 @@ export const getSimple = (slug: string) =>
 
 export type Zona = "Templada" | "Cálida" | "Fría";
 
+export type EquipoRecomendado = { tons: Tons; cantidad: number };
+
+/**
+ * Arma la combinacion de equipos que cubre el total de BTU calculado.
+ * Un solo equipo cubre hasta 24,000 BTU (2.0 Ton, el mas grande del catalogo);
+ * si el espacio necesita mas, se combinan varios equipos en vez de recomendar
+ * un solo 2.0 Ton que se quedaria corto.
+ */
+function comboEquipos(btuRaw: number): EquipoRecomendado[] {
+  const MAX_UNIDAD = BTU_BY_TONS["2.0"];
+
+  if (btuRaw <= MAX_UNIDAD) {
+    const tons: Tons = btuRaw <= BTU_BY_TONS["1.0"] ? "1.0" : btuRaw <= BTU_BY_TONS["1.5"] ? "1.5" : "2.0";
+    return [{ tons, cantidad: 1 }];
+  }
+
+  const equiposDe2Ton = Math.floor(btuRaw / MAX_UNIDAD);
+  const restante = btuRaw - equiposDe2Ton * MAX_UNIDAD;
+
+  if (restante === 0) return [{ tons: "2.0", cantidad: equiposDe2Ton }];
+  if (restante <= BTU_BY_TONS["1.0"]) {
+    return [
+      { tons: "2.0", cantidad: equiposDe2Ton },
+      { tons: "1.0", cantidad: 1 },
+    ];
+  }
+  if (restante <= BTU_BY_TONS["1.5"]) {
+    return [
+      { tons: "2.0", cantidad: equiposDe2Ton },
+      { tons: "1.5", cantidad: 1 },
+    ];
+  }
+  // el restante no cabe ni en un equipo de 1.5 Ton: se redondea a otro de 2.0 Ton
+  return [{ tons: "2.0", cantidad: equiposDe2Ton + 1 }];
+}
+
 export function recomendar(m2: number, zona: Zona, personas: number, solDirecto: boolean) {
   const zonaFactor = { Templada: 1, Cálida: 1.12, Fría: 1.25 }[zona];
   const btuRaw = (m2 * 600 * zonaFactor + Math.max(0, personas - 1) * 600) * (solDirecto ? 1.15 : 1);
-  const tons: Tons = btuRaw <= 12000 ? "1.0" : btuRaw <= 18000 ? "1.5" : "2.0";
-  return { btu: Math.round(btuRaw / 500) * 500, tons, recomendado: BTU_BY_TONS[tons] };
+  const equipos = comboEquipos(btuRaw);
+  const recomendado = equipos.reduce((acc, e) => acc + BTU_BY_TONS[e.tons] * e.cantidad, 0);
+  const multiplesEquipos = equipos.length > 1 || equipos[0].cantidad > 1;
+  return {
+    btu: Math.round(btuRaw / 500) * 500,
+    tons: equipos[0].tons,
+    recomendado,
+    equipos,
+    multiplesEquipos,
+  };
 }

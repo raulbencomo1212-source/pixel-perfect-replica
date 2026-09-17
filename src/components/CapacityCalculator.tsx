@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { BTU_BY_TONS, recomendar, type Zona } from "@/data/products";
+import { BTU_BY_TONS, recomendar, WHATSAPP_NUMBER, type Zona } from "@/data/products";
 
 const ZONAS: Zona[] = ["Templada", "Cálida", "Fría"];
 
@@ -77,17 +77,47 @@ export function CapacityCalculator() {
 
       <div className="flex flex-col justify-center rounded-xl bg-navy p-6 text-navy-foreground">
         <div className="text-[12px] uppercase tracking-wide text-navy-foreground/60">Capacidad recomendada</div>
-        <div className="mt-2 font-display text-4xl font-extrabold">{r.tons} Ton</div>
-        <div className="mt-1 text-sm text-navy-foreground/80">
-          {BTU_BY_TONS[r.tons].toLocaleString("es-MX")} BTU · tu cálculo estimado: {r.btu.toLocaleString("es-MX")} BTU
-        </div>
-        <Link
-          to="/minisplits"
-          search={{ tons: r.tons }}
-          className="mt-5 rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-        >
-          Ver minisplits de {r.tons} Toneladas recomendados
-        </Link>
+
+        {r.multiplesEquipos ? (
+          <>
+            <div className="mt-2 font-display text-2xl font-extrabold leading-snug">
+              {r.equipos.map((e, i) => (
+                <span key={e.tons}>
+                  {i > 0 ? " + " : ""}
+                  {e.cantidad} equipo{e.cantidad > 1 ? "s" : ""} de {e.tons} Ton
+                </span>
+              ))}
+            </div>
+            <div className="mt-1 text-sm text-navy-foreground/80">
+              Tu espacio supera lo que cubre un solo equipo · cubren {r.recomendado.toLocaleString("es-MX")} BTU ·
+              tu cálculo estimado: {r.btu.toLocaleString("es-MX")} BTU
+            </div>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                `Hola ClimasMax, mi espacio necesita más de un equipo (cálculo aprox. ${r.btu} BTU), me gustaría una recomendación personalizada`,
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 rounded-md bg-emerald px-4 py-3 text-center text-sm font-semibold text-emerald-foreground transition hover:opacity-90"
+            >
+              Cotiza por WhatsApp para confirmar la mejor distribución
+            </a>
+          </>
+        ) : (
+          <>
+            <div className="mt-2 font-display text-4xl font-extrabold">{r.tons} Ton</div>
+            <div className="mt-1 text-sm text-navy-foreground/80">
+              {BTU_BY_TONS[r.tons].toLocaleString("es-MX")} BTU · tu cálculo estimado: {r.btu.toLocaleString("es-MX")} BTU
+            </div>
+            <Link
+              to="/minisplits"
+              search={{ tons: r.tons }}
+              className="mt-5 rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+            >
+              Ver minisplits de {r.tons} Toneladas recomendados
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );
