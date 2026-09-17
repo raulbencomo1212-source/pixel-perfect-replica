@@ -20,7 +20,10 @@ import refaccionesImg from "@/assets/refacciones.jpg";
 import herramientasImg from "@/assets/herramientas.jpg";
 
 export const WHATSAPP_NUMBER = "528135630444";
-export const MSI_FEE_RATE = 0.135;
+// 12.89% = comision real que cobra Mercado Pago por el plan "Hasta 12 MSI".
+// Se le carga al cliente dentro de la mensualidad (el precio de contado no cambia),
+// para que la comision no salga del margen de Raul.
+export const MSI_FEE_RATE = 0.1289;
 
 export const cuota12MSI = (precioContado: number) =>
   Math.round((precioContado * (1 + MSI_FEE_RATE)) / 12);
