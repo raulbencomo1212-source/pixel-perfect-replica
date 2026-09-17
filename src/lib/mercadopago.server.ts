@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getEvent, getWebRequest } from "@tanstack/react-start/server";
+import { getRequest } from "@tanstack/react-start/server";
+import { env } from "cloudflare:workers";
 import { MINISPLITS, getPrice, type Tons, type Voltage, type ModeKey } from "@/data/products";
 
 /**
@@ -30,33 +31,30 @@ function precioAutoritativo(item: ItemCarritoInput): number {
 }
 
 /**
- * Busca el Access Token de Mercado Pago primero en el binding de Cloudflare (produccion,
- * lo inyecta el runtime real de Workers) y si no en process.env (desarrollo local via
- * .dev.vars, o si Lovable expone las variables de entorno de esa forma). Si no encuentra
- * ninguna, truena con un mensaje claro en vez de fallar en silencio.
+ * Busca el Access Token de Mercado Pago primero en los bindings de Cloudflare Workers
+ * (produccion; se accede importando "env" desde "cloudflare:workers", la forma oficial
+ * documentada por Cloudflare para TanStack Start) y si no en process.env (desarrollo
+ * local via .dev.vars). Si no encuentra ninguna, truena con un mensaje claro en vez de
+ * fallar en silencio.
  */
 function credencialMercadoPago(): string {
-  const event = getEvent();
-  const cfEnv = (event?.context as { cloudflare?: { env?: Record<string, string | undefined> } } | undefined)
-    ?.cloudflare?.env;
+  const cfEnv = env as Record<string, string | undefined> | undefined;
   const token = cfEnv?.MP_ACCESS_TOKEN ?? (typeof process !== "undefined" ? process.env?.MP_ACCESS_TOKEN : undefined);
   if (!token) {
     throw new Error(
       "Falta configurar MP_ACCESS_TOKEN (variable de entorno / secreto de Mercado Pago). " +
-        "En desarrollo local va en .dev.vars; en produccion hay que agregarla como variable de entorno del proyecto en Lovable.",
+        "En desarrollo local va en .dev.vars; en produccion se agrega como Secret en Lovable (seccion Cloud).",
     );
   }
   return token;
 }
 
 function origenSitio(): string {
-  const request = getWebRequest();
-  if (request) {
-    try {
-      return new URL(request.url).origin;
-    } catch {
-      /* ignore */
-    }
+  try {
+    const request = getRequest();
+    if (request) return new URL(request.url).origin;
+  } catch {
+    /* ignore */
   }
   return "https://climasmax.com.mx";
 }
