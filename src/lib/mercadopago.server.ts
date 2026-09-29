@@ -118,7 +118,10 @@ export const crearCheckoutMercadoPago = createServerFn({ method: "POST" })
     }
 
     const json = (await respuesta.json()) as { init_point?: string; sandbox_init_point?: string };
-    const url = json.init_point ?? json.sandbox_init_point;
+    // MODO PRUEBA TEMPORAL: mientras Raul confirma el flujo con el usuario de prueba de
+    // Mercado Pago, se prioriza el link de sandbox sobre el real. Revertir a
+    // `json.init_point ?? json.sandbox_init_point` en cuanto se confirme que funciona.
+    const url = json.sandbox_init_point ?? json.init_point;
     if (!url) {
       throw new Error("Mercado Pago no devolvio un link de pago.");
     }
